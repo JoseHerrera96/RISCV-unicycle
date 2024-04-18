@@ -1,0 +1,52 @@
+$date
+	Mon Apr 15 21:46:19 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module instmemory_tb $end
+$var wire 32 ! instruct [31:0] $end
+$var parameter 32 " CLK_PERIOD $end
+$var reg 32 # Read1 [31:0] $end
+$var reg 1 $ RegWrite $end
+$var reg 32 % WriteData [31:0] $end
+$var reg 32 & WriteReg [31:0] $end
+$var reg 1 ' clock $end
+$scope module uut $end
+$var wire 32 ( Read1 [31:0] $end
+$var wire 1 $ RegWrite $end
+$var wire 32 ) WriteData [31:0] $end
+$var wire 32 * WriteReg [31:0] $end
+$var wire 1 ' clock $end
+$var wire 32 + instruct [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1010 "
+$end
+#0
+$dumpvars
+bx +
+b0 *
+b101000100000000010110011 )
+bx (
+x'
+b0 &
+b101000100000000010110011 %
+1$
+bx #
+bx !
+$end
+#10000
+b0 #
+b0 (
+0$
+#20000
+b1 #
+b1 (
+#30000

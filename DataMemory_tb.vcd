@@ -1,0 +1,50 @@
+$date
+	Sat Apr 13 16:04:16 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module DataMemory_tb $end
+$var wire 32 ! read_data [31:0] $end
+$var parameter 32 " CLK_PERIOD $end
+$var reg 32 # address [31:0] $end
+$var reg 1 $ clk $end
+$var reg 1 % read_enable $end
+$var reg 32 & write_data [31:0] $end
+$var reg 1 ' write_enable $end
+$scope module uut $end
+$var wire 32 ( address [31:0] $end
+$var wire 1 $ clk $end
+$var wire 1 % read_enable $end
+$var wire 32 ) write_data [31:0] $end
+$var wire 1 ' write_enable $end
+$var reg 32 * read_data [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1010 "
+$end
+#0
+$dumpvars
+bx *
+b10101011110011011110111111111111 )
+b1010 (
+1'
+b10101011110011011110111111111111 &
+0%
+x$
+b1010 #
+bx !
+$end
+#10000
+1%
+0'
+#20000
+b10100 #
+b10100 (
+#30000
