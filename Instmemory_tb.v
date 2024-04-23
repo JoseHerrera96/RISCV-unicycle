@@ -3,7 +3,7 @@
 module instmemory_tb;
 
     // Parámetros
-    parameter CLK_PERIOD = 10; // Periodo del reloj en unidades de tiempo
+    parameter CLK_PERIOD = 40; // Periodo del reloj en unidades de tiempo
 
     // Definición de señales
     reg [31:0] Read1, WriteReg, WriteData;
@@ -12,7 +12,7 @@ module instmemory_tb;
 
     // Instancia del módulo a probar
     instmemory uut(
-        .Read1(Read1),
+        .addr(Read1),
         .WriteReg(WriteReg),
         .WriteData(WriteData),
         .RegWrite(RegWrite),
@@ -32,7 +32,7 @@ module instmemory_tb;
     initial begin
         // Escribir datos en la memoria de instrucciones
         WriteReg = 0; // Escribir en la dirección 0
-        RegWrite = 1; // Habilitar la escritura
+        RegWrite = 32'd1; // Habilitar la escritura
         WriteData = 32'h00A200B3; // Datos de instrucción a escribir
         // Simular un ciclo de reloj para escribir los datos
         #CLK_PERIOD;
