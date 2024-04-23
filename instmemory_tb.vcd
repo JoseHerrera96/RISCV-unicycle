@@ -1,5 +1,5 @@
 $date
-	Mon Apr 22 23:03:56 2024
+	Mon Apr 22 23:07:15 2024
 $end
 $version
 	Icarus Verilog
@@ -11,17 +11,14 @@ $scope module instmemory_tb $end
 $var wire 32 ! instruct [31:0] $end
 $var parameter 32 " CLK_PERIOD $end
 $var reg 32 # Read1 [31:0] $end
-$var reg 1 $ RegWrite $end
-$var reg 32 % WriteData [31:0] $end
-$var reg 32 & WriteReg [31:0] $end
-$var reg 1 ' clock $end
+$var reg 1 $ clock $end
 $scope module uut $end
-$var wire 1 $ RegWrite $end
-$var wire 32 ( WriteData [31:0] $end
-$var wire 32 ) WriteReg [31:0] $end
-$var wire 32 * addr [31:0] $end
-$var wire 1 ' clock $end
-$var wire 32 + instruct [31:0] $end
+$var wire 1 % RegWrite $end
+$var wire 32 & WriteData [31:0] $end
+$var wire 32 ' WriteReg [31:0] $end
+$var wire 32 ( addr [31:0] $end
+$var wire 1 $ clock $end
+$var wire 32 ) instruct [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
@@ -31,22 +28,18 @@ b10 "
 $end
 #0
 $dumpvars
-bx +
-bx *
-b0 )
-b101000100000000010110011 (
-x'
-b0 &
-b101000100000000010110011 %
-1$
-bx #
-bx !
+b101000100000000010110011 )
+b0 (
+bz '
+bz &
+z%
+x$
+b0 #
+b101000100000000010110011 !
 $end
 #2
-b0 #
-b0 *
-0$
-#4
+b1000000000100100000000100110011 !
+b1000000000100100000000100110011 )
 b1 #
-b1 *
-#6
+b1 (
+#4

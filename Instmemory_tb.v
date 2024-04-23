@@ -13,9 +13,6 @@ module instmemory_tb;
     // Instancia del módulo a probar
     instmemory uut(
         .addr(Read1),
-        .WriteReg(WriteReg),
-        .WriteData(WriteData),
-        .RegWrite(RegWrite),
         .instruct(instruct),
         .clock(clock)
     );
@@ -30,14 +27,6 @@ module instmemory_tb;
 
     // Inicialización de señales
     initial begin
-        // Escribir datos en la memoria de instrucciones
-        WriteReg = 0; // Escribir en la dirección 0
-        RegWrite = 32'd1; // Habilitar la escritura
-        WriteData = 32'h00A200B3; // Datos de instrucción a escribir
-        // Simular un ciclo de reloj para escribir los datos
-        #CLK_PERIOD;
-        // Desactivar la escritura
-        RegWrite = 0;
         // Leer la instrucción de la memoria de instrucciones
         Read1 = 0; // Leer de la dirección 0
         // Simular un ciclo de reloj para leer los datos
