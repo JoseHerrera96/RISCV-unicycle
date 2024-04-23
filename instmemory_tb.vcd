@@ -1,11 +1,11 @@
 $date
-	Mon Apr 22 22:53:45 2024
+	Mon Apr 22 23:03:56 2024
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1ns
+	1s
 $end
 $scope module instmemory_tb $end
 $var wire 32 ! instruct [31:0] $end
@@ -27,7 +27,7 @@ $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b101000 "
+b10 "
 $end
 #0
 $dumpvars
@@ -42,11 +42,11 @@ b101000100000000010110011 %
 bx #
 bx !
 $end
-#40000
+#2
 b0 #
 b0 *
 0$
-#80000
+#4
 b1 #
 b1 *
-#120000
+#6

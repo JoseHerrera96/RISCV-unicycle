@@ -1,9 +1,9 @@
-`timescale 1us/1ns
+//`timescale 1us/1ns
 `include "Instmemory.v"
 module instmemory_tb;
 
     // Parámetros
-    parameter CLK_PERIOD = 1; // Periodo del reloj en unidades de tiempo
+    parameter CLK_PERIOD = 2; // Periodo del reloj en unidades de tiempo
 
     // Definición de señales
     reg [31:0] Read1, WriteReg, WriteData;
@@ -46,6 +46,8 @@ module instmemory_tb;
         Read1 = 1; // Leer de la dirección 1
         // Simular un ciclo de reloj para leer los datos
         #CLK_PERIOD;
+        $display("instruccion= %h", instruct);
+    
         // Finalizar la simulación
         $finish;
     end
