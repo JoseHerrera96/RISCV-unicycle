@@ -3,7 +3,7 @@
 module instmemory_tb;
 
     // Parámetros
-    parameter CLK_PERIOD = 40; // Periodo del reloj en unidades de tiempo
+    parameter CLK_PERIOD = 1; // Periodo del reloj en unidades de tiempo
 
     // Definición de señales
     reg [31:0] Read1, WriteReg, WriteData;
