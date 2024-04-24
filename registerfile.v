@@ -6,12 +6,12 @@ module registerfile(Read1,Read2,WriteReg,WriteData,RegWrite,Data1,Data2,clock);
     output [31:0] Data1, Data2;
     reg [31:0] RF [31:0];
 
-
-    always begin  
-        @(posedge clock) 
-        if (RegWrite) 
-            RF[WriteReg]<=WriteData;
-    end
     assign Data1=RF[Read1];
     assign Data2=RF[Read2];
+
+
+    always begin @(posedge clock) 
+        if (RegWrite==1) 
+            RF[WriteReg]<=WriteData;
+    end
 endmodule
