@@ -2,8 +2,8 @@
 `include "instmemory.v"
 `include "registerfile.v"
 `include "RISCVALU.v"
-`include "DataMemory.v"
-`include "SignExt.v"
+`include "datamem.v"
+`include "signext.v"
 `include "PC.v"
 module RISCVunicycle(clk,reset);
 
