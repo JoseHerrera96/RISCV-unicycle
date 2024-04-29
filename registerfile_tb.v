@@ -12,7 +12,6 @@ module registerfile_tb;
     registerfile uut(
         .Read1(Read1),
         .Read2(Read2),
-        .WriteReg(WriteReg),
         .WriteData(WriteData),
         .RegWrite(RegWrite),
         .clock(clock),

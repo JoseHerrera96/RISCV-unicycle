@@ -12,13 +12,15 @@ module RISCVunicycle(clk,reset);
     wire [31:0] PC, D1, D2;
     reg[31:0] Aluin1, Aluin2;
     reg [5:0] R1,R2,Rd;
-    reg [31:0] alu_out;
-    wire[31:0] instruct, pcout;
-    reg [11:0] imm, ext_imm;
+    wire [31:0] ALUout;
+    wire[31:0] instruct, pc_reg;
+    reg [11:0] imm; 
+    wire [31:0] ext_imm;
     reg [6:0] opcode, funct3;
     reg [3:0] alu_op;
     reg mem_read, mem_write;
-    reg [31:0] addrs,datainmemory,dout;
+    reg [31:0] addrs,datainmemory;
+    wire [31:0] dout;
     wire zero;
     reg [31:0]alu_src;
     
@@ -27,10 +29,10 @@ module RISCVunicycle(clk,reset);
     PC modPC(
     .clk(clk),
     .reset(reset),
-    .pc_out(pcout) 
+    .pc_reg(pc_reg) 
     );
     instmemory modInstm(
-        .Read1(pcout),
+        .addr(pc_reg),
         .instruct(instruct)
     );
     registerfile modregfile(
@@ -38,14 +40,14 @@ module RISCVunicycle(clk,reset);
         .Read2(R2),
         .Data1(D1),
         .Data2(D2),
-        .Rd(Rd),
+        .RD(Rd),
         .clock(clk)
     );
-    riscvalu modalu(
+    RISCVALU modalu(
         .ALUctl(alu_op),
         .A(Aluin1),
         .B(Aluin2),
-        .ALUout(alu_out),
+        .ALUout(ALUout),
         .zero(zero)
     );
     DataMemory modmemory(
@@ -56,7 +58,7 @@ module RISCVunicycle(clk,reset);
     .write_data(datainmemory),
     .read_data(dout)
     );
-    SignExt extensorS(
+    signext extensorS(
     .in(imm),
     .out(ext_imm)
     );
@@ -93,8 +95,8 @@ module RISCVunicycle(clk,reset);
     end
         
     always @(*) begin
-        Aluin1 = register_file.R1;
-        Aluin2 = register_file.alu_src;
+        Aluin1 = D1;
+        Aluin2 = alu_src;
     end
 
     always @(*) begin
