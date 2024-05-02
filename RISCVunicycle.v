@@ -83,21 +83,11 @@ module RISCVunicycle(clk,reset);
             R1 <= instruct[19:15];
             R2 <= instruct[24:20];
             Rd <= instruct[11:7];
-            //imm <= instruct[31:20];
             case (opcode)
                 7'b0110011: alu_op <= funct3; // Rtype
-                7'b0010011: begin
-                            alu_op <= funct3;
-                            imm <= instruct[31:20]; // Itype
-                            end
-                7'b0000011: begin
-                            alu_op <= 3'b000; // Load Word
-                            imm <= {instruct[31:25],instruct[11:7],}; // Itype
-                            end
-                7'b0100011: begin
-                            alu_op <= 3'b000; // Store Word
-                            imm <= {instruct[31:25], instruct[11:7],}; // Itype
-                            end
+                7'b0010011: alu_op <= funct3; // Itype            
+                7'b0000011: alu_op <= 3'b000; // Load Word
+                7'b0100011: alu_op <= 3'b000; // Store Word                 
                 default: alu_op <= 3'b000; 
             endcase
             mem_read <= (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word

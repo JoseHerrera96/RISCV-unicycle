@@ -2,7 +2,7 @@
 `include "signext.v"
 module signext_tb;
 
-    parameter CLK_PERIOD = 10; // Periodo de reloj en unidades de tiempo
+    //parameter CLK_PERIOD = 10; // Periodo de reloj en unidades de tiempo
 
     reg [31:0] instruct;
     reg [6:0] typ;
@@ -37,15 +37,19 @@ module signext_tb;
         typ = 7'b0000011;
         instruct = 32'h0000FFFF; // Ejemplo de dirección de memoria positiva
         #10;
+        $display("Inmeadiato con signo extendido: %b,", out);
         instruct = 32'hFFFF0000; // Ejemplo de dirección de memoria negativa
         #10;
+        $display("Inmeadiato con signo extendido: %b,", out);
         
         // Tipo S
         typ = 7'b0100011;
         instruct = 32'h0000FFFF; // Ejemplo de dirección de memoria positiva
         #10;
+        $display("Inmeadiato con signo extendido: %b,", out);
         instruct = 32'hFFFF0000; // Ejemplo de dirección de memoria negativa
         #10;
+        $display("Inmeadiato con signo extendido: %b,", out);
         
         // Detener simulación
         #10;
