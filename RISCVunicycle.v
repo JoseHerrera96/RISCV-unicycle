@@ -13,7 +13,7 @@ module RISCVunicycle(clk,reset);
     reg[31:0] Aluin1, Aluin2;
     reg [5:0] R1,R2,Rd;
     wire [31:0] ALUout;
-    wire[31:0] instruct, pc_reg;
+    wire[31:0] instruct, pc_out, instaddr;
     reg [11:0] imm; 
     wire [31:0] ext_imm;
     reg [6:0] opcode, funct3;
@@ -29,10 +29,10 @@ module RISCVunicycle(clk,reset);
     PC modPC(
     .clk(clk),
     .reset(reset),
-    .pc_reg(pc_reg) 
+    .pc_reg(pc_out) 
     );
     instmemory modInstm(
-        .addr(pc_reg),
+        .addr(instaddr),
         .instruct(instruct)
     );
     registerfile modregfile(
@@ -59,8 +59,9 @@ module RISCVunicycle(clk,reset);
     .read_data(dout)
     );
     signext extensorS(
-    .in(imm),
-    .out(ext_imm)
+    .instruct(instruct),
+    .out(ext_imm),
+    .typ(opcode)
     );
 
 
@@ -69,24 +70,34 @@ module RISCVunicycle(clk,reset);
         $dumpvars(0, RISCVunicycle);
     end
 
-    always @ (posedge clk or posedge reset) begin
+    always @ (posedge clk or posedge reset) begin //control
         
         if (reset) begin
             R1=0;// Reset de señales
         end 
         else begin
             // Decodificación de la instrucción
+            instaddr <= pc_out;
             opcode <= instruct[6:0];
             funct3 <= instruct[14:12];
             R1 <= instruct[19:15];
             R2 <= instruct[24:20];
             Rd <= instruct[11:7];
-            imm <= instruct[31:20];
+            //imm <= instruct[31:20];
             case (opcode)
                 7'b0110011: alu_op <= funct3; // Rtype
-                7'b0010011: alu_op <= funct3; // Itype
-                7'b0000011: alu_op <= 3'b000; // Load Word
-                7'b0100011: alu_op <= 3'b000; // Store Word
+                7'b0010011: begin
+                            alu_op <= funct3;
+                            imm <= instruct[31:20]; // Itype
+                            end
+                7'b0000011: begin
+                            alu_op <= 3'b000; // Load Word
+                            imm <= {instruct[31:25],instruct[11:7],}; // Itype
+                            end
+                7'b0100011: begin
+                            alu_op <= 3'b000; // Store Word
+                            imm <= {instruct[31:25], instruct[11:7],}; // Itype
+                            end
                 default: alu_op <= 3'b000; 
             endcase
             mem_read <= (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word
@@ -99,7 +110,7 @@ module RISCVunicycle(clk,reset);
         Aluin2 = alu_src;
     end
 
-    always @(*) begin
+    always @(*) begin//ALU control
         if (opcode == 7'b0110011) begin
             alu_src = ext_imm;
         end 
