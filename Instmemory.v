@@ -8,7 +8,7 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
     initial begin
         
         RF[0]= 32'h00A200B3;
-        RF[1]= 32'h40120133;
+        //RF[1]= 32'h40120133;
     end
     always @(posedge clock) begin 
         if (RegWrite==1) 

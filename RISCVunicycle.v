@@ -10,7 +10,7 @@ module RISCVunicycle(clk,reset);
     input wire clk;
     input wire reset;
     wire [31:0] PC, D1, D2;
-    reg[31:0] Aluin1,Aluin2,instaddr;
+    reg[31:0] Aluin1,Aluin2,instaddr,dataregin;
     reg [5:0] R1,R2,Rd;
     wire [31:0] ALUout;
     wire[31:0] instruct, pc_out;
@@ -18,8 +18,8 @@ module RISCVunicycle(clk,reset);
     wire [31:0] ext_imm;
     reg [6:0] opcode, funct3;
     reg [3:0] alu_op;
-    reg mem_read, mem_write;
-    reg [31:0] addrs,datainmemory;
+    reg mem_read, mem_write,regenb;
+    reg [31:0] addrs,datainmemory, outp;
     wire [31:0] dout;
     wire zero;
     reg [31:0]alu_src;
@@ -41,7 +41,9 @@ module RISCVunicycle(clk,reset);
         .Data1(D1),
         .Data2(D2),
         .RD(Rd),
-        .clock(clk)
+        .clock(clk),
+        .RegWrite(regenb),
+        .WriteData(dataregin)
     );
     RISCVALU modalu(
         .ALUctl(alu_op),
@@ -74,7 +76,24 @@ module RISCVunicycle(clk,reset);
         
         if (reset) begin
             R1=0;// Reset de señales
+            R2=0;
+            Rd=0;
+            instaddr=0;
+            opcode=0;
+            funct3=0;
+            Aluin1=0;
+            Aluin2=0;
+            instaddr=0;
+            imm=0;
+            alu_op=0;
+            mem_read=0; 
+            mem_write=0;
+            addrs=0;
+            datainmemory=0;
+            alu_src=0;
+            regenb=0;
         end 
+
         else begin
             // Decodificación de la instrucción
             instaddr <= pc_out;
@@ -83,10 +102,21 @@ module RISCVunicycle(clk,reset);
             R1 <= instruct[19:15];
             R2 <= instruct[24:20];
             Rd <= instruct[11:7];
+            regenb<=0;
+            mem_read<=0;
             case (opcode)
-                7'b0110011: alu_op <= funct3; // Rtype
-                7'b0010011: alu_op <= funct3; // Itype            
-                7'b0000011: alu_op <= 3'b000; // Load Word
+                7'b0110011: begin 
+                            alu_op <= funct3; // Rtype
+                            regenb <= 1;
+                            end
+                7'b0010011: begin
+                            alu_op <= funct3; // Itype
+                            regenb <= 1;
+                            end            
+                7'b0000011: begin
+                            alu_op <=3'b000; // Load Word
+                            regenb <= 1;
+                            end
                 7'b0100011: alu_op <= 3'b000; // Store Word                 
                 default: alu_op <= 3'b000; 
             endcase
@@ -99,13 +129,22 @@ module RISCVunicycle(clk,reset);
         Aluin1 = D1;
         Aluin2 = alu_src;
     end
+    always @(*) begin
+        if (mem_read==1)begin
+            outp=dout;
+        end
+        else begin
+            outp=ALUout;
+        end
+            
+    end
 
     always @(*) begin//ALU control
-        if (opcode == 7'b0110011) begin
+        if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
         end 
         else begin
-            alu_src = R2;
+            alu_src = D2;
         end
     end
 

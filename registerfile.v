@@ -8,6 +8,12 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
 
     assign Data1=RF[Read1];
     assign Data2=RF[Read2];
+    
+    initial begin
+        RF[4]= 32'd1;
+        RF[10]= 34'd2;
+    end
+   
 
 
     always begin @(posedge clock) 
