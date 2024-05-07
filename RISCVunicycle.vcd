@@ -1,0 +1,181 @@
+$date
+	Mon May 06 20:41:44 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module RISCVunicycle_tb $end
+$scope module dut $end
+$var wire 1 ! clk $end
+$var wire 1 " reset $end
+$var wire 1 # zero $end
+$var wire 32 $ pc_out [31:0] $end
+$var wire 32 % instruct [31:0] $end
+$var wire 32 & ext_imm [31:0] $end
+$var wire 32 ' dout [31:0] $end
+$var wire 32 ( D2 [31:0] $end
+$var wire 32 ) D1 [31:0] $end
+$var wire 32 * ALUout [31:0] $end
+$var reg 32 + Aluin1 [31:0] $end
+$var reg 32 , Aluin2 [31:0] $end
+$var reg 6 - R1 [5:0] $end
+$var reg 6 . R2 [5:0] $end
+$var reg 6 / Rd [5:0] $end
+$var reg 32 0 addrs [31:0] $end
+$var reg 4 1 alu_op [3:0] $end
+$var reg 32 2 alu_src [31:0] $end
+$var reg 32 3 datainmemory [31:0] $end
+$var reg 32 4 dataregin [31:0] $end
+$var reg 7 5 funct3 [6:0] $end
+$var reg 12 6 imm [11:0] $end
+$var reg 32 7 instaddr [31:0] $end
+$var reg 1 8 mem_read $end
+$var reg 1 9 mem_write $end
+$var reg 7 : opcode [6:0] $end
+$var reg 32 ; outp [31:0] $end
+$var reg 1 < regenb $end
+$scope module extensorS $end
+$var wire 7 = typ [6:0] $end
+$var wire 32 > instruct [31:0] $end
+$var wire 12 ? inS [11:0] $end
+$var wire 12 @ inL [11:0] $end
+$var wire 12 A in [11:0] $end
+$var reg 32 B out [31:0] $end
+$upscope $end
+$scope module modInstm $end
+$var wire 1 C RegWrite $end
+$var wire 32 D WriteData [31:0] $end
+$var wire 32 E WriteReg [31:0] $end
+$var wire 32 F addr [31:0] $end
+$var wire 1 G clock $end
+$var wire 32 H instruct [31:0] $end
+$upscope $end
+$scope module modPC $end
+$var wire 1 ! clk $end
+$var wire 1 " reset $end
+$var reg 32 I pc_reg [31:0] $end
+$upscope $end
+$scope module modalu $end
+$var wire 32 J A [31:0] $end
+$var wire 4 K ALUctl [3:0] $end
+$var wire 32 L B [31:0] $end
+$var reg 32 M ALUout [31:0] $end
+$var reg 1 # zero $end
+$upscope $end
+$scope module modmemory $end
+$var wire 32 N address [31:0] $end
+$var wire 1 ! clk $end
+$var wire 1 8 read_enable $end
+$var wire 32 O write_data [31:0] $end
+$var wire 1 9 write_enable $end
+$var reg 32 P read_data [31:0] $end
+$upscope $end
+$scope module modregfile $end
+$var wire 32 Q Data1 [31:0] $end
+$var wire 32 R Data2 [31:0] $end
+$var wire 6 S RD [5:0] $end
+$var wire 6 T Read1 [5:0] $end
+$var wire 6 U Read2 [5:0] $end
+$var wire 1 < RegWrite $end
+$var wire 32 V WriteData [31:0] $end
+$var wire 1 ! clock $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module RISCVunicycle_tb $end
+$var parameter 32 W CLK_PERIOD $end
+$var reg 1 ! clock $end
+$var reg 1 " rst $end
+$scope module dut $end
+$scope module extensorS $end
+$upscope $end
+$scope module modInstm $end
+$upscope $end
+$scope module modPC $end
+$upscope $end
+$scope module modalu $end
+$upscope $end
+$scope module modmemory $end
+$upscope $end
+$scope module modregfile $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b10011100010000 W
+$end
+#0
+$dumpvars
+bx V
+bx U
+bx T
+bx S
+bx R
+bx Q
+bx P
+bx O
+bx N
+bx M
+bx L
+bx K
+bx J
+bx I
+bx H
+zG
+bx F
+bz E
+bz D
+zC
+bx B
+bx A
+bx @
+bx ?
+bx >
+bx =
+x<
+bx ;
+bx :
+x9
+x8
+bx 7
+bx 6
+bx 5
+bx 4
+bx 3
+bx 2
+bx 1
+bx 0
+bx /
+bx .
+bx -
+bx ,
+bx +
+bx *
+bx )
+bx (
+bx '
+bx &
+bx %
+bx $
+x#
+0"
+x!
+$end
+#10000
+b0 1
+b0 K
+x8
+0<
+b0xxxxx /
+b0xxxxx S
+b0xxxxx .
+b0xxxxx U
+b0xxxxx -
+b0xxxxx T
+b0xxx 5
+0"

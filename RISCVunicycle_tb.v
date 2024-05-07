@@ -1,21 +1,31 @@
 `timescale 1us/1ns
 `include "RISCVunicycle.v"
 
-module RISCVALU_tb;
+module RISCVunicycle_tb;
 
     parameter CLK_PERIOD = 10000; 
 
-    reg[3:0] ALUctl;
-    reg[31:0] A,B;
-    wire[31:0] ALUout;
-    wire zero;
+      reg clock, rst;
 
     RISCVunicycle dut(
-        
+        .clk(clock),
+        .reset(rst)
         
     );
 
     initial begin
-        $dumpfile("RISCVALU_tb.vcd");
-        $dumpvars(0, RISCVALU_tb);
+        $dumpfile("RISCVunicycle_tb.vcd");
+        $dumpvars(0, RISCVunicycle_tb);
     end
+
+    always #((CLK_PERIOD)/2) clock = ~clock;
+
+    initial begin
+        rst=0;
+        #10;
+        rst=1;
+        rst=0;
+        #10;
+    end
+
+endmodule

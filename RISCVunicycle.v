@@ -136,6 +136,8 @@ module RISCVunicycle(clk,reset);
         else begin
             outp=ALUout;
         end
+        dataregin<=outp;
+        $display("entrada de datos: %d", dataregin);
             
     end
 
