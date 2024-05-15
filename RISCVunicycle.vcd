@@ -1,11 +1,11 @@
 $date
-	Mon May 06 20:41:44 2024
+	Tue May 14 23:13:59 2024
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1ns
+	1s
 $end
 $scope module RISCVunicycle_tb $end
 $scope module dut $end
@@ -21,9 +21,9 @@ $var wire 32 ) D1 [31:0] $end
 $var wire 32 * ALUout [31:0] $end
 $var reg 32 + Aluin1 [31:0] $end
 $var reg 32 , Aluin2 [31:0] $end
-$var reg 6 - R1 [5:0] $end
-$var reg 6 . R2 [5:0] $end
-$var reg 6 / Rd [5:0] $end
+$var reg 5 - R1 [4:0] $end
+$var reg 5 . R2 [4:0] $end
+$var reg 5 / Rd [4:0] $end
 $var reg 32 0 addrs [31:0] $end
 $var reg 4 1 alu_op [3:0] $end
 $var reg 32 2 alu_src [31:0] $end
@@ -74,14 +74,14 @@ $var wire 1 9 write_enable $end
 $var reg 32 P read_data [31:0] $end
 $upscope $end
 $scope module modregfile $end
-$var wire 32 Q Data1 [31:0] $end
-$var wire 32 R Data2 [31:0] $end
-$var wire 6 S RD [5:0] $end
-$var wire 6 T Read1 [5:0] $end
-$var wire 6 U Read2 [5:0] $end
+$var wire 5 Q RD [4:0] $end
+$var wire 5 R Read1 [4:0] $end
+$var wire 5 S Read2 [4:0] $end
 $var wire 1 < RegWrite $end
-$var wire 32 V WriteData [31:0] $end
+$var wire 32 T WriteData [31:0] $end
 $var wire 1 ! clock $end
+$var wire 32 U Data2 [31:0] $end
+$var wire 32 V Data1 [31:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -107,75 +107,82 @@ $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b10011100010000 W
+b10 W
 $end
 #0
 $dumpvars
-bx V
-bx U
-bx T
-bx S
-bx R
-bx Q
+b0xxxxx V
+b0xxxxx U
+b0xxxxx T
+b0 S
+b0 R
+b0 Q
 bx P
-bx O
-bx N
-bx M
-bx L
-bx K
-bx J
-bx I
-bx H
+b0 O
+b0 N
+b0xxxxx M
+b0xxxxx L
+b0 K
+b0xxxxx J
+b0 I
+b0 H
 zG
-bx F
+b0 F
 bz E
 bz D
 zC
 bx B
-bx A
-bx @
-bx ?
-bx >
-bx =
-x<
-bx ;
-bx :
-x9
-x8
-bx 7
-bx 6
-bx 5
-bx 4
-bx 3
-bx 2
-bx 1
-bx 0
-bx /
-bx .
-bx -
-bx ,
-bx +
-bx *
-bx )
-bx (
+b0 A
+b0 @
+b0 ?
+b0 >
+b0 =
+0<
+b0xxxxx ;
+b0 :
+09
+08
+b0 7
+b0 6
+b0 5
+b0xxxxx 4
+b0 3
+b0xxxxx 2
+b0 1
+b0 0
+b0 /
+b0 .
+b0 -
+b0xxxxx ,
+b0xxxxx +
+b0xxxxx *
+b0xxxxx )
+b0xxxxx (
 bx '
 bx &
-bx %
-bx $
+b0 %
+b0 $
 x#
-0"
-x!
+1"
+0!
 $end
-#10000
-b0 1
-b0 K
-x8
-0<
-b0xxxxx /
-b0xxxxx S
-b0xxxxx .
-b0xxxxx U
-b0xxxxx -
-b0xxxxx T
-b0xxx 5
+#1000
+b0 4
+b0 T
+b0 ;
+b0 *
+b0 M
+b0 2
+b0 ,
+b0 L
+b0xxxxx +
+b0xxxxx J
+1!
+#2000
 0"
+#3000
+b1 $
+b1 I
+1!
+#4000
+0!

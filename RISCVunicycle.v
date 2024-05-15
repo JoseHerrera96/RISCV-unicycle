@@ -1,4 +1,4 @@
-`timescale 1us/1ns
+//`timescale 1us/1ns
 `include "instmemory.v"
 `include "registerfile.v"
 `include "RISCVALU.v"
@@ -11,7 +11,7 @@ module RISCVunicycle(clk,reset);
     input wire reset;
     wire [31:0] PC, D1, D2;
     reg[31:0] Aluin1,Aluin2,instaddr,dataregin;
-    reg [5:0] R1,R2,Rd;
+    reg [4:0] R1,R2,Rd;
     wire [31:0] ALUout;
     wire[31:0] instruct, pc_out;
     reg [11:0] imm; 
@@ -92,6 +92,7 @@ module RISCVunicycle(clk,reset);
             datainmemory=0;
             alu_src=0;
             regenb=0;
+            $display("reset done");
         end 
 
         else begin
@@ -122,9 +123,19 @@ module RISCVunicycle(clk,reset);
             endcase
             mem_read <= (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word
             mem_write <= (opcode == 7'b0100011) ? 1'b1 : 1'b0; // Store Word
+            $display("fetch done: %h", instruct);
         end
     end
         
+    always @(*) begin//ALU control
+        if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
+            alu_src = ext_imm;
+        end 
+        else begin
+            alu_src = D2;
+            $display("ALU control done");
+        end
+    end
     always @(*) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
@@ -136,18 +147,9 @@ module RISCVunicycle(clk,reset);
         else begin
             outp=ALUout;
         end
-        dataregin<=outp;
+        dataregin=outp;
         $display("entrada de datos: %d", dataregin);
             
-    end
-
-    always @(*) begin//ALU control
-        if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-            alu_src = ext_imm;
-        end 
-        else begin
-            alu_src = D2;
-        end
     end
 
 endmodule

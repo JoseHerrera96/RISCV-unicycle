@@ -1,9 +1,9 @@
-`timescale 1us/1ns
+//`timescale 1us/1ns
 `include "RISCVunicycle.v"
 
 module RISCVunicycle_tb;
 
-    parameter CLK_PERIOD = 10000; 
+    parameter CLK_PERIOD = 2; 
 
       reg clock, rst;
 
@@ -18,14 +18,22 @@ module RISCVunicycle_tb;
         $dumpvars(0, RISCVunicycle_tb);
     end
 
-    always #((CLK_PERIOD)/2) clock = ~clock;
+   //always begin
+        //#5 clock = ~clock;
+    //end
 
     initial begin
-        rst=0;
-        #10;
+        clock=0;
         rst=1;
+        #1000;
+        clock=1;
+        #1000;
         rst=0;
-        #10;
+        #1000;
+        clock=0;
+        clock=1;
+        #1000;
+        clock=0;
     end
 
 endmodule
