@@ -4,7 +4,7 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
     input[31:0] WriteData;
     input RegWrite, clock;
     output wire [31:0] Data1, Data2;
-    reg [4:0] RF [31:0];
+    reg [31:0] RF [31:0];
 
     assign Data1=RF[Read1];
     assign Data2=RF[Read2];
@@ -20,7 +20,7 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
    
 
 
-    always begin @(posedge clock) 
+    always @(posedge clock) begin
         if (RegWrite==1) 
             RF[RD]<=WriteData;
     end

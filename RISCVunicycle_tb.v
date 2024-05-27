@@ -5,7 +5,7 @@ module RISCVunicycle_tb;
 
     parameter CLK_PERIOD = 2; 
 
-      reg clock, rst;
+    reg clock, rst;
 
     RISCVunicycle dut(
         .clk(clock),
@@ -25,15 +25,17 @@ module RISCVunicycle_tb;
     initial begin
         clock=0;
         rst=1;
-        #1000;
+        #100;
         clock=1;
-        #1000;
         rst=0;
-        #1000;
+        #100;
         clock=0;
+        #100;
         clock=1;
-        #1000;
+        #100;
         clock=0;
+        #100;
+        $finish;
     end
 
 endmodule

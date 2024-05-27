@@ -1,4 +1,4 @@
-//`timescale 1us/1ns
+`timescale 1us/1ns
 `include "instmemory.v"
 `include "registerfile.v"
 `include "RISCVALU.v"
@@ -18,7 +18,7 @@ module RISCVunicycle(clk,reset);
     wire [31:0] ext_imm;
     reg [6:0] opcode, funct3;
     reg [3:0] alu_op;
-    reg mem_read, mem_write,regenb;
+    reg mem_read, mem_write,regenb,pcnext;
     reg [31:0] addrs,datainmemory, outp;
     wire [31:0] dout;
     wire zero;
@@ -29,7 +29,8 @@ module RISCVunicycle(clk,reset);
     PC modPC(
     .clk(clk),
     .reset(reset),
-    .pc_reg(pc_out) 
+    .pc_reg(pc_out),
+    .pcnext(pcnext) 
     );
     instmemory modInstm(
         .addr(instaddr),
@@ -66,67 +67,85 @@ module RISCVunicycle(clk,reset);
     .typ(opcode)
     );
 
-
-    initial begin
-        $dumpfile("RISCVunicycle.vcd");
-        $dumpvars(0, RISCVunicycle);
-    end
-
     always @ (posedge clk or posedge reset) begin //control
         
         if (reset) begin
-            R1=0;// Reset de señales
-            R2=0;
-            Rd=0;
-            instaddr=0;
-            opcode=0;
-            funct3=0;
-            Aluin1=0;
-            Aluin2=0;
-            instaddr=0;
-            imm=0;
-            alu_op=0;
+            pcnext<=0;
+            R1=5'd0;// Reset de señales
+            R2=5'd0;
+            Rd=5'd0;
+            instaddr=32'd0;
+            opcode=7'd0;
+            funct3=7'd0;
+            Aluin1=32'd0;
+            Aluin2=32'd0;
+            imm=12'd0;
+            alu_op=4'd0;
             mem_read=0; 
             mem_write=0;
-            addrs=0;
-            datainmemory=0;
-            alu_src=0;
+            addrs=32'd0;
+            datainmemory=32'd0;
+            alu_src=32'd0;
             regenb=0;
             $display("reset done");
         end 
 
         else begin
             // Decodificación de la instrucción
-            instaddr <= pc_out;
+            instaddr = pc_out;
             opcode <= instruct[6:0];
             funct3 <= instruct[14:12];
             R1 <= instruct[19:15];
             R2 <= instruct[24:20];
             Rd <= instruct[11:7];
-            regenb<=0;
-            mem_read<=0;
+            regenb=0;
+            mem_read=0;
+            pcnext=0;
             case (opcode)
                 7'b0110011: begin 
-                            alu_op <= funct3; // Rtype
-                            regenb <= 1;
+                            alu_op = funct3; // Rtype
+                            regenb = 1;
                             end
                 7'b0010011: begin
-                            alu_op <= funct3; // Itype
-                            regenb <= 1;
+                            alu_op = funct3; // Itype
+                            regenb = 1;
                             end            
                 7'b0000011: begin
-                            alu_op <=3'b000; // Load Word
-                            regenb <= 1;
+                            alu_op =3'b000; // Load Word
+                            regenb = 1;
                             end
-                7'b0100011: alu_op <= 3'b000; // Store Word                 
+                7'b0100011: alu_op = 3'b000; // Store Word                 
                 default: alu_op <= 3'b000; 
             endcase
-            mem_read <= (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word
-            mem_write <= (opcode == 7'b0100011) ? 1'b1 : 1'b0; // Store Word
+            mem_read = (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word
+            mem_write = (opcode == 7'b0100011) ? 1'b1 : 1'b0; // Store Word
             $display("fetch done: %h", instruct);
+            
+            if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
+                alu_src = ext_imm;
+            end 
+            else begin
+                alu_src = D2;
+                $display("ALU control done");
+            end
+
+            Aluin1 = D1;
+            Aluin2 = alu_src;
+            $display("Aluin1: %d", Aluin1);
+            $display("Aluin2: %d", Aluin2);
+
+            if (mem_read==1)begin
+                outp=dout;
+            end
+            else begin
+                outp=ALUout;
+            end
+            dataregin=outp;
+            pcnext=1;
+            $display("entrada de datos: %d", dataregin);
         end
     end
-        
+/*
     always @(*) begin//ALU control
         if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
@@ -139,8 +158,10 @@ module RISCVunicycle(clk,reset);
     always @(*) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
+        $display("Aluin1: %d", Aluin1);
+        $display("Aluin2: %d", Aluin2);
     end
-    always @(*) begin
+    always @(*) begin;
         if (mem_read==1)begin
             outp=dout;
         end
@@ -148,8 +169,11 @@ module RISCVunicycle(clk,reset);
             outp=ALUout;
         end
         dataregin=outp;
+        pcnext=1;
         $display("entrada de datos: %d", dataregin);
             
     end
+
+*/
 
 endmodule
