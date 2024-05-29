@@ -12,7 +12,6 @@ module RISCVunicycle_tb;
         .reset(rst)
         
     );
-
     initial begin
         $dumpfile("RISCVunicycle_tb.vcd");
         $dumpvars(0, RISCVunicycle_tb);
