@@ -1,5 +1,5 @@
 $date
-	Sun May 26 22:02:21 2024
+	Sun Jun 02 13:32:38 2024
 $end
 $version
 	Icarus Verilog
@@ -106,10 +106,10 @@ bx S
 bx R
 b0 Q
 b0 P
-b0 O
-b0 N
+bx O
+bx N
 b0 M
-b0 L
+bx L
 b0 K
 b0 J
 zI
@@ -134,15 +134,15 @@ b0 7
 b0 6
 bx 5
 b0 4
-b0 3
+bx 3
 b0 2
 b0 1
 b0 0
 b0 /
 b0 .
-b0 -
-b0 ,
-b0 +
+bx -
+bx ,
+bx +
 bx *
 bx )
 bx (
@@ -154,29 +154,12 @@ x$
 0"
 $end
 #100000
-bx +
-bx O
-1=
-b0 5
-b0 X
-b0 <
-bx -
-bx N
-bx ,
-bx L
-bx 3
+1"
 0#
-1"
-#200000
+#1100000
 0"
-#300000
-b1 %
-b1 K
-bx 5
-bx X
-bx <
-1=
+#2100000
 1"
-#400000
+#3100000
 0"
-#500000
+#4100000

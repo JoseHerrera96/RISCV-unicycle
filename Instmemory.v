@@ -10,9 +10,10 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
         RF[1]= 32'h00A200B3;
         //RF[1]= 32'h40120133;
     end
-    assign instruct=RF[addr];
     always @(posedge clock) begin 
         if (RegWrite==1) 
             RF[WriteReg]<=WriteData;
     end
+
+    assign instruct=RF[addr];
 endmodule

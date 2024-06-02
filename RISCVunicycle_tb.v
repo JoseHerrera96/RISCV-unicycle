@@ -1,4 +1,4 @@
-//`timescale 1us/1ns
+`timescale 1ms/1us
 `include "RISCVunicycle.v"
 
 module RISCVunicycle_tb;
@@ -25,16 +25,16 @@ module RISCVunicycle_tb;
         clock=0;
         rst=1;
         #100;
-        clock=1;
         rst=0;
-        #100;
-        clock=0;
-        #100;
         clock=1;
-        #100;
+        #1000;
         clock=0;
-        #100;
-        $finish;
+        #1000;
+        clock=1;
+        #1000;
+        clock=0;
+        #1000;
+        //$finish;
     end
 
 endmodule

@@ -105,6 +105,7 @@ module RISCVunicycle(clk,reset);
                 7'b0110011: begin 
                             alu_op = funct3; // Rtype
                             regenb = 1;
+                            $display("tipo R");
                             end
                 7'b0010011: begin
                             alu_op = funct3; // Itype
@@ -117,36 +118,9 @@ module RISCVunicycle(clk,reset);
                 7'b0100011: alu_op = 3'b000; // Store Word                 
                 default: alu_op <= 3'b000; 
             endcase
-            mem_read = (opcode == 7'b0000011) ? 1'b1 : 1'b0; // Load Word
-            mem_write = (opcode == 7'b0100011) ? 1'b1 : 1'b0; // Store Word
-            $display("fetch done: %h", instruct);
-            
-            if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-                alu_src = ext_imm;
-            end 
-            else begin
-                alu_src = D2;
-                $display("ALU control done");
-            end
-
-            Aluin1 = D1;
-            Aluin2 = alu_src;
-            $display("Aluin1: %d", Aluin1);
-            $display("Aluin2: %d", Aluin2);
-
-            if (mem_read==1)begin
-                outp=dout;
-            end
-            else begin
-                outp=ALUout;
-            end
-            dataregin=outp;
-            pcnext=1;
-            $display("entrada de datos: %d", dataregin);
         end
     end
-/*
-    always @(*) begin//ALU control
+    always @(opcode) begin//ALU control
         if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
         end 
@@ -155,7 +129,7 @@ module RISCVunicycle(clk,reset);
             $display("ALU control done");
         end
     end
-    always @(*) begin
+    always @(Aluin1 & Aluin2) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
         $display("Aluin1: %d", Aluin1);
@@ -173,7 +147,5 @@ module RISCVunicycle(clk,reset);
         $display("entrada de datos: %d", dataregin);
             
     end
-
-*/
 
 endmodule
