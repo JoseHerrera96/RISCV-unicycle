@@ -8,8 +8,8 @@ module RISCVunicycle_tb;
     reg clock, rst;
 
     RISCVunicycle dut(
-        .clk(clock),
-        .reset(rst)
+        .clock(clock),
+        .rst(rst)
         
     );
     initial begin
@@ -24,7 +24,7 @@ module RISCVunicycle_tb;
     initial begin
         clock=0;
         rst=1;
-        #100;
+        #1000;
         rst=0;
         clock=1;
         #1000;
@@ -33,6 +33,8 @@ module RISCVunicycle_tb;
         clock=1;
         #1000;
         clock=0;
+        #1000;
+        clock=1;
         #1000;
         //$finish;
     end

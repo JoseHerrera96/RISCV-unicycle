@@ -5,10 +5,11 @@
 `include "datamem.v"
 `include "signext.v"
 `include "PC.v"
-module RISCVunicycle(clk,reset);
 
-    input wire clk;
-    input wire reset;
+module RISCVunicycle(clock,rst);
+
+    input clock;
+    input rst;
     wire [31:0] PC, D1, D2;
     reg[31:0] Aluin1,Aluin2,instaddr,dataregin;
     reg [4:0] R1,R2,Rd;
@@ -27,10 +28,10 @@ module RISCVunicycle(clk,reset);
     // modulos
 
     PC modPC(
-    .clk(clk),
-    .reset(reset),
-    .pc_reg(pc_out),
-    .pcnext(pcnext) 
+        .clk(clk),
+        .reset(reset),
+        .pc_reg(pc_out),
+        .pcnext(pcnext) 
     );
     instmemory modInstm(
         .addr(instaddr),
@@ -54,18 +55,19 @@ module RISCVunicycle(clk,reset);
         .zero(zero)
     );
     DataMemory modmemory(
-    .clk(clk),
-    .write_enable(mem_write),
-    .read_enable(mem_read),
-    .address(addrs),
-    .write_data(datainmemory),
-    .read_data(dout)
+        .clk(clk),
+        .write_enable(mem_write),
+        .read_enable(mem_read),
+        .address(addrs),
+        .write_data(datainmemory),
+        .read_data(dout)
     );
     signext extensorS(
-    .instruct(instruct),
-    .out(ext_imm),
-    .typ(opcode)
+        .instruct(instruct),
+        .out(ext_imm),
+        .typ(opcode)
     );
+  
 
     always @ (posedge clk or posedge reset) begin //control
         
@@ -100,7 +102,6 @@ module RISCVunicycle(clk,reset);
             Rd <= instruct[11:7];
             regenb=0;
             mem_read=0;
-            pcnext=0;
             case (opcode)
                 7'b0110011: begin 
                             alu_op = funct3; // Rtype
@@ -143,9 +144,7 @@ module RISCVunicycle(clk,reset);
             outp=ALUout;
         end
         dataregin=outp;
-        pcnext=1;
         $display("entrada de datos: %d", dataregin);
             
     end
-
 endmodule

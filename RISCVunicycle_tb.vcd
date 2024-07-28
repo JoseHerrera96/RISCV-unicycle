@@ -1,5 +1,5 @@
 $date
-	Mon Jul 15 18:18:39 2024
+	Sun Jul 28 13:56:22 2024
 $end
 $version
 	Icarus Verilog
@@ -12,81 +12,83 @@ $var parameter 32 ! CLK_PERIOD $end
 $var reg 1 " clock $end
 $var reg 1 # rst $end
 $scope module dut $end
-$var wire 1 " clk $end
-$var wire 1 # reset $end
-$var wire 1 $ zero $end
-$var wire 32 % pc_out [31:0] $end
-$var wire 32 & instruct [31:0] $end
-$var wire 32 ' ext_imm [31:0] $end
-$var wire 32 ( dout [31:0] $end
-$var wire 32 ) D2 [31:0] $end
-$var wire 32 * D1 [31:0] $end
-$var wire 32 + ALUout [31:0] $end
-$var reg 32 , Aluin1 [31:0] $end
-$var reg 32 - Aluin2 [31:0] $end
-$var reg 5 . R1 [4:0] $end
-$var reg 5 / R2 [4:0] $end
-$var reg 5 0 Rd [4:0] $end
-$var reg 32 1 addrs [31:0] $end
-$var reg 4 2 alu_op [3:0] $end
-$var reg 32 3 alu_src [31:0] $end
-$var reg 32 4 datainmemory [31:0] $end
-$var reg 32 5 dataregin [31:0] $end
-$var reg 7 6 funct3 [6:0] $end
-$var reg 12 7 imm [11:0] $end
-$var reg 32 8 instaddr [31:0] $end
-$var reg 1 9 mem_read $end
-$var reg 1 : mem_write $end
-$var reg 7 ; opcode [6:0] $end
-$var reg 32 < outp [31:0] $end
-$var reg 1 = pcnext $end
-$var reg 1 > regenb $end
+$var wire 1 $ clk $end
+$var wire 1 " clock $end
+$var wire 1 % reset $end
+$var wire 1 # rst $end
+$var wire 1 & zero $end
+$var wire 32 ' pc_out [31:0] $end
+$var wire 32 ( instruct [31:0] $end
+$var wire 32 ) ext_imm [31:0] $end
+$var wire 32 * dout [31:0] $end
+$var wire 32 + D2 [31:0] $end
+$var wire 32 , D1 [31:0] $end
+$var wire 32 - ALUout [31:0] $end
+$var reg 32 . Aluin1 [31:0] $end
+$var reg 32 / Aluin2 [31:0] $end
+$var reg 5 0 R1 [4:0] $end
+$var reg 5 1 R2 [4:0] $end
+$var reg 5 2 Rd [4:0] $end
+$var reg 32 3 addrs [31:0] $end
+$var reg 4 4 alu_op [3:0] $end
+$var reg 32 5 alu_src [31:0] $end
+$var reg 32 6 datainmemory [31:0] $end
+$var reg 32 7 dataregin [31:0] $end
+$var reg 7 8 funct3 [6:0] $end
+$var reg 12 9 imm [11:0] $end
+$var reg 32 : instaddr [31:0] $end
+$var reg 1 ; mem_read $end
+$var reg 1 < mem_write $end
+$var reg 7 = opcode [6:0] $end
+$var reg 32 > outp [31:0] $end
+$var reg 1 ? pcnext $end
+$var reg 1 @ regenb $end
 $scope module extensorS $end
-$var wire 7 ? typ [6:0] $end
-$var wire 32 @ instruct [31:0] $end
-$var wire 12 A inS [11:0] $end
-$var wire 12 B inL [11:0] $end
-$var wire 12 C in [11:0] $end
-$var reg 32 D out [31:0] $end
+$var wire 7 A typ [6:0] $end
+$var wire 32 B instruct [31:0] $end
+$var wire 12 C inS [11:0] $end
+$var wire 12 D inL [11:0] $end
+$var wire 12 E in [11:0] $end
+$var reg 32 F out [31:0] $end
 $upscope $end
 $scope module modInstm $end
-$var wire 1 E RegWrite $end
-$var wire 32 F WriteData [31:0] $end
-$var wire 32 G WriteReg [31:0] $end
-$var wire 32 H addr [31:0] $end
-$var wire 1 I clock $end
-$var wire 32 J instruct [31:0] $end
+$var wire 1 G RegWrite $end
+$var wire 32 H WriteData [31:0] $end
+$var wire 32 I WriteReg [31:0] $end
+$var wire 32 J addr [31:0] $end
+$var wire 1 K clock $end
+$var wire 32 L instruct [31:0] $end
 $upscope $end
 $scope module modPC $end
-$var wire 1 " clk $end
-$var wire 1 = pcnext $end
-$var wire 1 # reset $end
-$var reg 32 K pc_reg [31:0] $end
+$var wire 1 $ clk $end
+$var wire 1 ? pcnext $end
+$var wire 1 % reset $end
+$var reg 32 M pc_reg [31:0] $end
 $upscope $end
 $scope module modalu $end
-$var wire 32 L A [31:0] $end
-$var wire 4 M ALUctl [3:0] $end
-$var wire 32 N B [31:0] $end
-$var reg 32 O ALUout [31:0] $end
-$var reg 1 $ zero $end
+$var wire 32 N A [31:0] $end
+$var wire 4 O ALUctl [3:0] $end
+$var wire 32 P B [31:0] $end
+$var reg 32 Q ALUout [31:0] $end
+$var reg 1 & zero $end
 $upscope $end
 $scope module modmemory $end
-$var wire 32 P address [31:0] $end
-$var wire 1 " clk $end
-$var wire 1 9 read_enable $end
-$var wire 32 Q write_data [31:0] $end
-$var wire 1 : write_enable $end
-$var reg 32 R read_data [31:0] $end
+$var wire 32 R address [31:0] $end
+$var wire 1 $ clk $end
+$var wire 1 ; read_enable $end
+$var wire 32 S write_data [31:0] $end
+$var wire 1 < write_enable $end
+$var reg 32 T read_data [31:0] $end
 $upscope $end
 $scope module modregfile $end
-$var wire 32 S Data1 [31:0] $end
-$var wire 32 T Data2 [31:0] $end
-$var wire 5 U RD [4:0] $end
-$var wire 5 V Read1 [4:0] $end
-$var wire 5 W Read2 [4:0] $end
-$var wire 1 > RegWrite $end
-$var wire 32 X WriteData [31:0] $end
-$var wire 1 " clock $end
+$var wire 32 U Data1 [31:0] $end
+$var wire 32 V Data2 [31:0] $end
+$var wire 5 W RD [4:0] $end
+$var wire 5 X Read1 [4:0] $end
+$var wire 5 Y Read2 [4:0] $end
+$var wire 1 @ RegWrite $end
+$var wire 32 Z WriteData [31:0] $end
+$var wire 1 $ clock $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -97,69 +99,73 @@ b10 !
 $end
 #0
 $dumpvars
+bx Z
+bx Y
 bx X
-b0 W
-b0 V
-b0 U
+bx W
+bx V
+bx U
 bx T
 bx S
 bx R
-b0 Q
-b0 P
+bx Q
+bx P
 bx O
 bx N
 b0 M
 bx L
-b0 K
-b0 J
-zI
-b0 H
-bz G
-bz F
-zE
+zK
+bx J
+bz I
+bz H
+zG
+bx F
+bx E
 bx D
-b0 C
-b0 B
-b0 A
-b0 @
-b0 ?
-0>
-0=
-bx <
-b0 ;
-0:
-09
-b0 8
-b0 7
-b0 6
+bx C
+bx B
+bx A
+x@
+x?
+bx >
+bx =
+x<
+x;
+bx :
+bx 9
+bx 8
+bx 7
+bx 6
 bx 5
-b0 4
+bx 4
 bx 3
-b0 2
-b0 1
-b0 0
-b0 /
-b0 .
+bx 2
+bx 1
+bx 0
+bx /
+bx .
 bx -
 bx ,
 bx +
 bx *
 bx )
 bx (
-bx '
-b0 &
-b0 %
-x$
+b0 '
+x&
+z%
+z$
 1#
 0"
 $end
-#100000
+#1000000
 1"
 0#
-#1100000
+#2000000
 0"
-#2100000
+#3000000
 1"
-#3100000
+#4000000
 0"
-#4100000
+#5000000
+1"
+#6000000
