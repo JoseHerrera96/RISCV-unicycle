@@ -8,8 +8,8 @@
 
 module RISCVunicycle(clock,rst);
 
-    input clock;
-    input rst;
+    input wire clock;
+    input wire rst;
     wire [31:0] PC, D1, D2;
     reg[31:0] Aluin1,Aluin2,instaddr,dataregin;
     reg [4:0] R1,R2,Rd;
@@ -28,8 +28,8 @@ module RISCVunicycle(clock,rst);
     // modulos
 
     PC modPC(
-        .clk(clk),
-        .reset(reset),
+        .clk(clock),
+        .reset(rst),
         .pc_reg(pc_out),
         .pcnext(pcnext) 
     );
@@ -43,7 +43,7 @@ module RISCVunicycle(clock,rst);
         .Data1(D1),
         .Data2(D2),
         .RD(Rd),
-        .clock(clk),
+        .clock(clock),
         .RegWrite(regenb),
         .WriteData(dataregin)
     );
@@ -55,7 +55,7 @@ module RISCVunicycle(clock,rst);
         .zero(zero)
     );
     DataMemory modmemory(
-        .clk(clk),
+        .clk(clock),
         .write_enable(mem_write),
         .read_enable(mem_read),
         .address(addrs),
@@ -69,9 +69,9 @@ module RISCVunicycle(clock,rst);
     );
   
 
-    always @ (posedge clk or posedge reset) begin //control
+    always @ (posedge clock or posedge rst) begin //control
         
-        if (reset) begin
+        if (rst==1) begin
             pcnext<=0;
             R1=5'd0;// Reset de señales
             R2=5'd0;
@@ -91,8 +91,9 @@ module RISCVunicycle(clock,rst);
             regenb=0;
             $display("reset done");
         end 
+    end
 
-        else begin
+    always @ (posedge clock and rst==0) begin
             // Decodificación de la instrucción
             instaddr = pc_out;
             opcode <= instruct[6:0];
@@ -121,6 +122,7 @@ module RISCVunicycle(clock,rst);
             endcase
         end
     end
+    
     always @(opcode) begin//ALU control
         if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;

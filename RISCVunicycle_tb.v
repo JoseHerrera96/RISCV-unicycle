@@ -20,14 +20,19 @@ module RISCVunicycle_tb;
    //always begin
         //#5 clock = ~clock;
     //end
+    initial begin
+        rst=0;
+        clock=0;
+    end
 
     initial begin
         clock=0;
         rst=1;
-        #1000;
         rst=0;
+        #1000;
         clock=1;
         #1000;
+        /*
         clock=0;
         #1000;
         clock=1;
@@ -36,7 +41,8 @@ module RISCVunicycle_tb;
         #1000;
         clock=1;
         #1000;
-        //$finish;
+        $finish;
+        */
     end
 
 endmodule
