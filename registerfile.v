@@ -12,6 +12,9 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
         $display("Data1: %d", Data1);
         $display("Data2: %d", Data2);
     end
+    always @* begin
+        $display("WriteData: %d", WriteData);
+    end
     
     initial begin
         RF[5'd4]= 32'd1;

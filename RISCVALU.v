@@ -8,6 +8,9 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
    // assign zero = (ALUout==0);
 
     always @* begin
+        $display("A: %d", A);
+        $display("B: %d", B);
+        $display("ALUctl: %b", ALUctl);
         case(ALUctl)
 
             0: ALUout = A&B;

@@ -17,7 +17,8 @@ module RISCVunicycle(clock,rst);
     wire[31:0] instruct, pc_out;
     reg [11:0] imm; 
     wire [31:0] ext_imm;
-    reg [6:0] opcode, funct3;
+    reg [6:0] opcode, funct7;
+    reg [3:0] funct3;
     reg [3:0] alu_op;
     reg mem_read, mem_write,regenb,pcnext;
     reg [31:0] addrs,datainmemory, outp;
@@ -69,7 +70,7 @@ module RISCVunicycle(clock,rst);
     );
   
 
-    always @ (posedge clock or posedge rst) begin //control
+    always @ (posedge rst) begin //control
         
         if (rst==1) begin
             pcnext<=0;
@@ -93,46 +94,62 @@ module RISCVunicycle(clock,rst);
         end 
     end
 
-    always @ (posedge clock and rst==0) begin
-            // Decodificación de la instrucción
-            instaddr = pc_out;
-            opcode <= instruct[6:0];
-            funct3 <= instruct[14:12];
-            R1 <= instruct[19:15];
-            R2 <= instruct[24:20];
-            Rd <= instruct[11:7];
-            regenb=0;
-            mem_read=0;
-            case (opcode)
-                7'b0110011: begin 
-                            alu_op = funct3; // Rtype
-                            regenb = 1;
-                            $display("tipo R");
-                            end
-                7'b0010011: begin
-                            alu_op = funct3; // Itype
-                            regenb = 1;
-                            end            
-                7'b0000011: begin
-                            alu_op =3'b000; // Load Word
-                            regenb = 1;
-                            end
-                7'b0100011: alu_op = 3'b000; // Store Word                 
-                default: alu_op <= 3'b000; 
-            endcase
-        end
+    always @ (posedge clock ) begin
+        // Decodificación de la instrucción
+        instaddr = pc_out;
+        opcode = instruct[6:0];
+        funct3 = instruct[14:12];
+        R1 = instruct[19:15];
+        R2 = instruct[24:20];
+        Rd = instruct[11:7];
+        $display("Instrucion: %h",instruct);
+        $display("R1: %b",R1);
+        $display("R2: %b",R2);
+        $display("D1: %d", D1);
+        $display("D2: %d", D2);
+        $display("opcode: %b", opcode);
+        regenb=0;
+        mem_read=0;
+        case (opcode)
+        7'b0110011: begin 
+            alu_op = funct3; // Rtype
+            funct7 = instruct[31:25];
+            if (funct3==3'b000) begin
+                case(funct7)
+                7'b0000000:
+                    alu_op = 2;
+                7'b0100000:
+                    alu_op = 6;
+                endcase
+            end
+            regenb = 1;
+            $display("tipo R");
+            end
+        7'b0010011: begin
+            alu_op = funct3; // Itype
+            regenb = 1;
+            end            
+        7'b0000011: begin
+            alu_op =3'b000; // Load Word
+            regenb = 1;
+            end
+        7'b0100011: alu_op = 3'b000; // Store Word                 
+            //default: alu_op <= 3'b000; 
+        endcase
+        $display("alu_op: %b", alu_op);
     end
     
-    always @(opcode) begin//ALU control
-        if ((opcode == 7'b0110011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
+    always @(opcode || D2) begin//ALU control
+        if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
         end 
+
         else begin
             alu_src = D2;
             $display("ALU control done");
         end
     end
-    always @(Aluin1 & Aluin2) begin
+    always @(D1 || alu_src) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
         $display("Aluin1: %d", Aluin1);
