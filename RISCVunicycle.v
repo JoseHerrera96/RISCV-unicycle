@@ -94,8 +94,9 @@ module RISCVunicycle(clock,rst);
         end 
     end
 
-    always @ (posedge clock ) begin
+    always @(pc_out) begin
         // Decodificación de la instrucción
+        $display("PC: %d", pc_out);
         instaddr = pc_out;
         opcode = instruct[6:0];
         funct3 = instruct[14:12];
@@ -114,14 +115,20 @@ module RISCVunicycle(clock,rst);
         7'b0110011: begin 
             alu_op = funct3; // Rtype
             funct7 = instruct[31:25];
-            if (funct3==3'b000) begin
+            case(funct3)
+            3'b111:
+                alu_op = 0;
+            3'b110:
+                alu_op = 1;
+            3'b000:
                 case(funct7)
                 7'b0000000:
                     alu_op = 2;
                 7'b0100000:
                     alu_op = 6;
                 endcase
-            end
+            endcase
+
             regenb = 1;
             $display("tipo R");
             end
@@ -139,7 +146,7 @@ module RISCVunicycle(clock,rst);
         $display("alu_op: %b", alu_op);
     end
     
-    always @(opcode || D2) begin//ALU control
+    always @(opcode) begin//ALU control
         if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
         end 
@@ -149,7 +156,7 @@ module RISCVunicycle(clock,rst);
             $display("ALU control done");
         end
     end
-    always @(D1 || alu_src) begin
+    always @(D1 or alu_src) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
         $display("Aluin1: %d", Aluin1);

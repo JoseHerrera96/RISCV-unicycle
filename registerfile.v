@@ -17,8 +17,8 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
     end
     
     initial begin
-        RF[5'd4]= 32'd1;
-        RF[5'd10]= 34'd2;
+        RF[5'd4]= 32'd2;
+        RF[5'd10]= 34'd1;
     end
 
     always @(posedge clock) begin
