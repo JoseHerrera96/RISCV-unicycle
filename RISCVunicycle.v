@@ -109,6 +109,7 @@ module RISCVunicycle(clock,rst);
         $display("D1: %d", D1);
         $display("D2: %d", D2);
         $display("opcode: %b", opcode);
+        $display("funct3: %b", funct3);
         regenb=0;
         mem_read=0;
         case (opcode)
@@ -144,9 +145,19 @@ module RISCVunicycle(clock,rst);
             //default: alu_op <= 3'b000; 
         endcase
         $display("alu_op: %b", alu_op);
+        
+        if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
+            alu_src = ext_imm;
+        end 
+
+        else begin
+            alu_src = D2;
+            $display("ALU control done");
+        end
+
     end
-    
-    always @(opcode) begin//ALU control
+    /*
+    always @(ext_imm or D2) begin//ALU control
         if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
             alu_src = ext_imm;
         end 
@@ -156,7 +167,8 @@ module RISCVunicycle(clock,rst);
             $display("ALU control done");
         end
     end
-    always @(D1 or alu_src) begin
+    */
+    always @(D1 , alu_src) begin
         Aluin1 = D1;
         Aluin2 = alu_src;
         $display("Aluin1: %d", Aluin1);

@@ -7,7 +7,7 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
 
    // assign zero = (ALUout==0);
 
-    always @* begin
+    always @(A or B) begin
         $display("A: %d", A);
         $display("B: %d", B);
         $display("ALUctl: %b", ALUctl);
