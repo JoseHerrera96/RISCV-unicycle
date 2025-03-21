@@ -4,14 +4,18 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
     input RegWrite, clock;
     output [31:0] instruct;
     reg [31:0] RF [31:0];
-
+    /*
     initial begin
         RF[0]= 32'h0;
         RF[1]= 32'h00A200B3; //add
         RF[2]= 32'h403100B3; //sub
         RF[3]= 32'h0062E0B3; //or
-        //RF[1]= 32'h40120133;
     end
+   */
+    initial begin
+        $readmemh("ProyectoCorto_instructions.hex", RF); // Cargar instrucciones desde un archivo hexadecimal
+    end
+    
     always @(posedge clock) begin 
         if (RegWrite==1) 
             RF[WriteReg]<=WriteData;

@@ -68,9 +68,8 @@ module RISCVunicycle(clock,rst);
         .out(ext_imm),
         .typ(opcode)
     );
-  
 
-    always @ (posedge rst) begin //control
+    always @ (rst) begin //control
         
         if (rst==1) begin
             pcnext<=0;

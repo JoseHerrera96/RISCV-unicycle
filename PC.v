@@ -9,7 +9,7 @@ always @(posedge clk) begin
     //$display("PC cambio: %d", pc_reg);
 end
 
-always @(posedge reset) begin
+always @(reset) begin
     if (reset==1) begin
         pc_reg <= 32'h0;
         $display("PC reset: %d", pc_reg);
