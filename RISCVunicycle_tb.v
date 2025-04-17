@@ -23,16 +23,12 @@ module RISCVunicycle_tb;
     //end
     initial begin
         rst=0;
-        clock=0;
         rst=1;
         #1000;
         rst=0;
     end
 
-    initial begin
-        rst=0;
-        #1000;
-
+    always begin
         clock=0;
         #1000;
         clock=1;

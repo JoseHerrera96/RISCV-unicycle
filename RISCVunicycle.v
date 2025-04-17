@@ -68,93 +68,102 @@ module RISCVunicycle(clock,rst);
         .out(ext_imm),
         .typ(opcode)
     );
+    
+    reg busy = 0; // Señal de control para evitar ejecución simultánea
 
-    always @ (rst) begin //control
-        
-        if (rst==1) begin
-            pcnext<=0;
-            R1=5'd0;// Reset de señales
-            R2=5'd0;
-            Rd=5'd0;
-            instaddr=32'd0;
-            opcode=7'd0;
-            funct3=7'd0;
-            Aluin1=32'd0;
-            Aluin2=32'd0;
-            imm=12'd0;
-            alu_op=4'd0;
-            mem_read=0; 
-            mem_write=0;
-            addrs=32'd0;
-            datainmemory=32'd0;
-            alu_src=32'd0;
-            regenb=0;
+    always @ (posedge rst) begin // Bloque de reset
+    if (!busy) begin
+        busy = 1; // Marca el bloque como ocupado
+        if (rst == 1) begin
+            R1 = 5'd0; // Reset de señales
+            R2 = 5'd0;
+            Rd = 5'd0;
+            instaddr = 32'd0;
+            opcode = 7'd0;
+            funct3 = 7'd0;
+            Aluin1 = 32'd0;
+            Aluin2 = 32'd0;
+            imm = 12'd0;
+            alu_op = 4'd0;
+            mem_read = 0; 
+            mem_write = 0;
+            addrs = 32'd0;
+            datainmemory = 32'd0;
+            alu_src = 32'd0;
+            regenb = 0;
             $display("reset done");
-        end 
+        end
+        busy = 0; // Libera el bloqueo
+    end
     end
 
     always @(pc_out) begin
-        // Decodificación de la instrucción
-        $display("PC: %d", pc_out);
-        instaddr = pc_out;
-        opcode = instruct[6:0];
-        funct3 = instruct[14:12];
-        R1 = instruct[19:15];
-        R2 = instruct[24:20];
-        Rd = instruct[11:7];
-        $display("Instrucion: %h",instruct);
-        $display("R1: %b",R1);
-        $display("R2: %b",R2);
-        $display("D1: %d", D1);
-        $display("D2: %d", D2);
-        $display("opcode: %b", opcode);
-        $display("funct3: %b", funct3);
-        regenb=0;
-        mem_read=0;
-        case (opcode)
-        7'b0110011: begin 
-            alu_op = funct3; // Rtype
-            funct7 = instruct[31:25];
-            case(funct3)
-            3'b111:
-                alu_op = 0;
-            3'b110:
-                alu_op = 1;
-            3'b000:
-                case(funct7)
-                7'b0000000:
-                    alu_op = 2;
-                7'b0100000:
-                    alu_op = 6;
+        if (!busy && !rst) begin
+            busy = 1; // Marca el bloque como ocupado
+            // Decodificación de la instrucción
+            $display("PC: %d", pc_out);
+            instaddr = pc_out;
+            opcode = instruct[6:0];
+            funct3 = instruct[14:12];
+            R1 = instruct[19:15];
+            R2 = instruct[24:20];
+            Rd = instruct[11:7];
+            $display("Instrucion: %h",instruct);
+            $display("R1: %b",R1);
+            $display("R2: %b",R2);
+            $display("D1: %d", D1);
+            $display("D2: %d", D2);
+            $display("opcode: %b", opcode);
+            $display("funct3: %b", funct3);
+            regenb=0;
+            mem_read=0;
+            case (opcode)
+            7'b0110011: begin 
+                alu_op = funct3; // Rtype
+                funct7 = instruct[31:25];
+                case(funct3)
+                3'b111:
+                    alu_op = 0;
+                3'b110:
+                    alu_op = 1;
+                3'b000:
+                    case(funct7)
+                    7'b0000000:
+                        alu_op = 2;
+                    7'b0100000:
+                        alu_op = 6;
+                    endcase
                 endcase
-            endcase
 
-            regenb = 1;
-            $display("tipo R");
+                regenb = 1;
+                $display("tipo R");
             end
-        7'b0010011: begin
-            alu_op = funct3; // Itype
-            regenb = 1;
+            7'b0010011: begin
+                alu_op = funct3; // Itype
+                regenb = 1;
             end            
-        7'b0000011: begin
-            alu_op =3'b000; // Load Word
-            regenb = 1;
+            7'b0000011: begin
+                alu_op =3'b000; // Load Word
+                regenb = 1;
             end
-        7'b0100011: alu_op = 3'b000; // Store Word                 
+            7'b0100011: alu_op = 3'b000; // Store Word                 
             //default: alu_op <= 3'b000; 
-        endcase
-        $display("alu_op: %b", alu_op);
+            endcase
+            $display("alu_op: %b", alu_op);
         
-        if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-            alu_src = ext_imm;
-        end 
+            if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
+                alu_src = ext_imm;
+            end 
 
-        else begin
-            alu_src = D2;
-            $display("ALU control done");
+            else begin
+                alu_src = D2;
+                $display("ALU control done");
+            end
+
+            busy = 0; // Libera el bloqueo
         end
-
     end
+    
     /*
     always @(ext_imm or D2) begin//ALU control
         if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin

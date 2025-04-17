@@ -3,7 +3,7 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
     input [31:0] WriteData;
     input RegWrite, clock;
     output [31:0] instruct;
-    reg [31:0] RF [31:0];
+    reg [31:0] RF [0:31]; // 32 registros de 32 bits
     /*
     initial begin
         RF[0]= 32'h0;
@@ -13,7 +13,7 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
     end
    */
     initial begin
-        $readmemh("ProyectoCorto_instructions.hex", RF); // Cargar instrucciones desde un archivo hexadecimal
+        $readmemh("RISCV (add,sub,or).hex", RF); // Cargar instrucciones desde un archivo hexadecimal
     end
     
     always @(posedge clock) begin 
