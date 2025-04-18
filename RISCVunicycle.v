@@ -109,16 +109,16 @@ module RISCVunicycle(clock,rst);
             R2 = instruct[24:20];
             Rd = instruct[11:7];
             $display("Instrucion: %h",instruct);
-            $display("R1: %b",R1);
-            $display("R2: %b",R2);
-            $display("D1: %d", D1);
-            $display("D2: %d", D2);
             $display("opcode: %b", opcode);
             $display("funct3: %b", funct3);
             regenb=0;
             mem_read=0;
             case (opcode)
             7'b0110011: begin 
+                $display("R1: %b",R1);
+                $display("R2: %b",R2);
+                $display("D1: %d", D1);
+                $display("D2: %d", D2);
                 alu_op = funct3; // Rtype
                 funct7 = instruct[31:25];
                 case(funct3)
@@ -141,6 +141,20 @@ module RISCVunicycle(clock,rst);
             7'b0010011: begin
                 alu_op = funct3; // Itype
                 regenb = 1;
+                funct7 = instruct[31:25];
+                case(funct3)
+                3'b111:
+                    alu_op = 0;
+                3'b110:
+                    alu_op = 1;
+                3'b000:
+                    case(funct7)
+                    7'b0000000:
+                        alu_op = 2;
+                    7'b0100000:
+                        alu_op = 6;
+                    endcase
+                endcase
             end            
             7'b0000011: begin
                 alu_op =3'b000; // Load Word
@@ -152,12 +166,20 @@ module RISCVunicycle(clock,rst);
             $display("alu_op: %b", alu_op);
         
             if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-                alu_src = ext_imm;
+                
+                alu_src <= ext_imm;
+                
+                $display("R1: %b",R1);
+                $display("D1: %d", D1);
+                $display("alu src: %d", alu_src);
+
+                $display("ALU control done");
+                $display("ext_imm: %d", ext_imm);
             end 
 
             else begin
                 alu_src = D2;
-                $display("ALU control done");
+                $display("ALU control ldone");
             end
 
             busy = 0; // Libera el bloqueo

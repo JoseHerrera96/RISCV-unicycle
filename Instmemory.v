@@ -4,16 +4,16 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
     input RegWrite, clock;
     output [31:0] instruct;
     reg [31:0] RF [0:31]; // 32 registros de 32 bits
-    /*
-    initial begin
-        RF[0]= 32'h0;
-        RF[1]= 32'h00A200B3; //add
-        RF[2]= 32'h403100B3; //sub
-        RF[3]= 32'h0062E0B3; //or
+   
+   initial begin
+    for (integer i = 0; i < 32; i = i + 1) begin
+        RF[i] = 32'h0; // Inicializar registros a 0
     end
-   */
-    initial begin
-        $readmemh("RISCV (add,sub,or).hex", RF); // Cargar instrucciones desde un archivo hexadecimal
+    $readmemh("RISCV (add,sub,or).hex", RF);
+    $display("Memory initialized:");
+    for (integer i = 0; i < 32; i = i + 1) begin
+        $display("RF[%0d] = %h", i, RF[i]);
+    end
     end
     
     always @(posedge clock) begin 
@@ -21,5 +21,5 @@ module instmemory(addr,WriteReg,WriteData,RegWrite,instruct,clock);
             RF[WriteReg]<=WriteData;
     end
 
-    assign instruct=RF[addr];
+    assign instruct=RF[addr]; // Asignar la instrucción correspondiente a la dirección de memoria
 endmodule
