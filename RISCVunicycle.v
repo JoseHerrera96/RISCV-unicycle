@@ -25,6 +25,7 @@ module RISCVunicycle(clock,rst);
     wire [31:0] dout;
     wire zero;
     reg [31:0]alu_src;
+    reg decode_done, alu_ready, aluSrc_cntrl_ready;
     
     // modulos
 
@@ -91,12 +92,15 @@ module RISCVunicycle(clock,rst);
             datainmemory = 32'd0;
             alu_src = 32'd0;
             regenb = 0;
+            decode_done = 0; // Señal para indicar que el decode ha terminado
+            alu_ready = 0;  // Señal para indicar que el registerF ha terminado
+            aluSrc_cntrl_ready = 0; // Señal para indicar el control de la ALU esta listo
             $display("reset done");
         end
         busy = 0; // Libera el bloqueo
     end
     end
-
+    // decoder
     always @(pc_out) begin
         if (!busy && !rst) begin
             busy = 1; // Marca el bloque como ocupado
@@ -106,103 +110,124 @@ module RISCVunicycle(clock,rst);
             opcode = instruct[6:0];
             funct3 = instruct[14:12];
             R1 = instruct[19:15];
-            R2 = instruct[24:20];
-            Rd = instruct[11:7];
-            $display("Instrucion: %h",instruct);
+            $display("Instrucion: %h", instruct);
             $display("opcode: %b", opcode);
             $display("funct3: %b", funct3);
-            regenb=0;
-            mem_read=0;
+            regenb = 0;
+            mem_read = 0;
+
             case (opcode)
-            7'b0110011: begin 
-                $display("R1: %b",R1);
-                $display("R2: %b",R2);
-                $display("D1: %d", D1);
-                $display("D2: %d", D2);
-                alu_op = funct3; // Rtype
-                funct7 = instruct[31:25];
-                case(funct3)
-                3'b111:
-                    alu_op = 0;
-                3'b110:
-                    alu_op = 1;
-                3'b000:
-                    case(funct7)
-                    7'b0000000:
-                        alu_op = 2;
-                    7'b0100000:
-                        alu_op = 6;
+                7'b0110011: begin // Tipo R
+                    R2 = instruct[24:20];
+                    Rd = instruct[11:7];
+                    funct7 = instruct[31:25];
+                    case (funct3)
+                        3'b111: alu_op = 0; // AND
+                        3'b110: alu_op = 1; // OR
+                        3'b000: begin
+                            case (funct7)
+                                7'b0000000: alu_op = 2; // ADD
+                                7'b0100000: alu_op = 6; // SUB
+                            endcase
+                        end
                     endcase
-                endcase
+                    $display("R1: %d", R1);
+                    $display("R2: %d", R2);
+                    $display("D1: %d", D1);
+                    $display("D2: %d", D2);
+                    $display("tipo R");
+                end
+                7'b0010011: begin // Tipo I
+                    Rd = instruct[11:7];
+                    case (funct3)
+                        3'b111: alu_op = 0; // ANDI
+                        3'b110: alu_op = 1; // ORI
+                        3'b000: alu_op = 2; // ADDI
+                    endcase
+                    $display("R1: %d", R1);
+                    $display("D1: %d", D1);
 
-                regenb = 1;
-                $display("tipo R");
-            end
-            7'b0010011: begin
-                alu_op = funct3; // Itype
-                regenb = 1;
-                funct7 = instruct[31:25];
-                case(funct3)
-                3'b111:
-                    alu_op = 0;
-                3'b110:
-                    alu_op = 1;
-                3'b000:
-                    case(funct7)
-                    7'b0000000:
-                        alu_op = 2;
-                    7'b0100000:
-                        alu_op = 6;
-                    endcase
-                endcase
-            end            
-            7'b0000011: begin
-                alu_op =3'b000; // Load Word
-                regenb = 1;
-            end
-            7'b0100011: alu_op = 3'b000; // Store Word                 
-            //default: alu_op <= 3'b000; 
+                    $display("tipo I");
+                end
+                7'b0000011: begin // Load Word (LW)
+                    alu_op = 3'b000;
+                    $display("tipo L");
+                end
+                7'b0100011: begin // Store Word (SW)
+                    alu_op = 3'b000;
+                    $display("tipo S");
+                end
             endcase
+
             $display("alu_op: %b", alu_op);
-        
-            if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-                
-                alu_src <= ext_imm;
-                
-                $display("R1: %b",R1);
-                $display("D1: %d", D1);
-                $display("alu src: %d", alu_src);
-
-                $display("ALU control done");
-                $display("ext_imm: %d", ext_imm);
-            end 
-
-            else begin
-                alu_src = D2;
-                $display("ALU control ldone");
-            end
-
+            decode_done = 1; // Indicar que el decode ha terminado
             busy = 0; // Libera el bloqueo
         end
     end
-    
-    /*
-    always @(ext_imm or D2) begin//ALU control
-        if ((opcode == 7'b0010011)||(opcode == 7'b0000011)||(opcode == 7'b0100011)) begin
-            alu_src = ext_imm;
-        end 
 
-        else begin
-            alu_src = D2;
-            $display("ALU control done");
-        end
-    end
-    */
-    always @(D1 , alu_src) begin
-        Aluin1 = D1;
-        Aluin2 = alu_src;
+    always @(posedge decode_done) begin
+        decode_done = 0; // Reinicia la señal de control
+        case (opcode)
+                7'b0110011: begin // Tipo R
+                    
+                    regenb = 1; // Habilitar escritura en registro
+                    alu_src = D2; // Usar registro como entrada de la ALU
+                end
+                7'b0010011: begin // Tipo I
+                    regenb = 1;
+                    alu_src = ext_imm; // Usar inmediato como entrada de la ALU
+                    $display("ext_imm: %d", ext_imm);
+                end
+                7'b0000011: begin // Load Word (LW)
+                    regenb = 1;
+                    mem_read = 1;
+                    alu_src = ext_imm; // Usar inmediato como entrada de la ALU
+                    $display("ext_imm: %d", ext_imm);
+                end
+                7'b0100011: begin // Store Word (SW)
+                    mem_write = 1;
+                    alu_src = ext_imm; // Usar inmediato como entrada de la ALU
+                    $display("ext_imm: %d", ext_imm);
+                end
+        endcase
+        aluSrc_cntrl_ready = 1; // Indicar que el control de la ALU está listo
+     end
+
+
+    // Modificación del bloque actual para activar alu_ready
+    always @(posedge aluSrc_cntrl_ready) begin
+        aluSrc_cntrl_ready = 0; // Reinicia la señal de control
+
+        // Configuración de las entradas de la ALU
+        Aluin1 = D1; // Entrada 1 de la ALU (desde el registerfile)
+        Aluin2 = alu_src; // Entrada 2 de la ALU (desde el registerfile o ext_imm)
         $display("Aluin1: %d", Aluin1);
         $display("Aluin2: %d", Aluin2);
+
+        alu_ready = 1; // Indicar que la ALU está lista para ejecutarse
+    end
+
+    // Nuevo módulo always para la ALU
+    always @(posedge alu_ready) begin
+        alu_ready = 0; // Reinicia la señal de control
+
+        // Ejecución de la operación en la ALU
+        $display("Ejecutando operación en la ALU");
+        // La salida de la ALU ya está conectada a ALUout a través del módulo RISCVALU
+        $display("Resultado de la ALU: %d", ALUout);
+
+        // Control de flujo posterior a la ALU
+        if (mem_read) begin
+            addrs = ALUout; // Dirección para lectura de memoria
+            $display("Leyendo de memoria en dirección: %d", addrs);
+        end else if (mem_write) begin
+            addrs = ALUout; // Dirección para escritura en memoria
+            datainmemory = D2; // Datos a escribir en memoria
+            $display("Escribiendo en memoria en dirección: %d, valor: %d", addrs, datainmemory);
+        end else begin
+            dataregin = ALUout; // Resultado de la ALU para escritura en el registro destino
+            $display("Resultado listo para escritura en registro: %d", dataregin);
+        end
     end
     always @(*) begin;
         if (mem_read==1)begin
