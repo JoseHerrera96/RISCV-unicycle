@@ -6,7 +6,7 @@
 `include "signext.v"
 `include "PC.v"
 
-module RISCVunicycle(clock,rst);
+module RISCVunicycle(clock,rst,finish_flag);
 
     input wire clock;
     input wire rst;
@@ -25,19 +25,23 @@ module RISCVunicycle(clock,rst);
     wire [31:0] dout;
     wire zero;
     reg [31:0]alu_src;
+    reg busy = 0; // Señal de control para evitar ejecución simultánea
     reg decode_done, alu_ready, aluSrc_cntrl_ready;
-    
+    wire last_instr_flag; // Bandera para indicar que el programa ha terminado
+    output reg finish_flag; // Bandera para indicar que el programa ha terminado
     // modulos
 
     PC modPC(
         .clk(clock),
         .reset(rst),
         .pc_reg(pc_out),
+        .finish_flag(finish_flag),
         .pcnext(pcnext) 
     );
     instmemory modInstm(
         .addr(instaddr),
-        .instruct(instruct)
+        .instruct(instruct),
+        .last_instr_flag(last_instr_flag)
     );
     registerfile modregfile(
         .Read1(R1),
@@ -47,7 +51,8 @@ module RISCVunicycle(clock,rst);
         .RD(Rd),
         .clock(clock),
         .RegWrite(regenb),
-        .WriteData(dataregin)
+        .WriteData(dataregin),
+        .finish_flag(finish_flag)
     );
     RISCVALU modalu(
         .ALUctl(alu_op),
@@ -69,8 +74,6 @@ module RISCVunicycle(clock,rst);
         .out(ext_imm),
         .typ(opcode)
     );
-    
-    reg busy = 0; // Señal de control para evitar ejecución simultánea
 
     always @ (posedge rst) begin // Bloque de reset
     if (!busy) begin
@@ -95,6 +98,7 @@ module RISCVunicycle(clock,rst);
             decode_done = 0; // Señal para indicar que el decode ha terminado
             alu_ready = 0;  // Señal para indicar que el registerF ha terminado
             aluSrc_cntrl_ready = 0; // Señal para indicar el control de la ALU esta listo
+            finish_flag=0;
             $display("reset done");
         end
         busy = 0; // Libera el bloqueo
@@ -102,25 +106,25 @@ module RISCVunicycle(clock,rst);
     end
     // decoder
     always @(pc_out) begin
-        if (!busy && !rst) begin
+        if (!busy && !rst && !finish_flag) begin
             busy = 1; // Marca el bloque como ocupado
             // Decodificación de la instrucción
             $display("PC: %d", pc_out);
             instaddr = pc_out;
             opcode = instruct[6:0];
-            funct3 = instruct[14:12];
             R1 = instruct[19:15];
             $display("Instrucion: %h", instruct);
             $display("opcode: %b", opcode);
-            $display("funct3: %b", funct3);
             regenb = 0;
             mem_read = 0;
 
             case (opcode)
                 7'b0110011: begin // Tipo R
                     R2 = instruct[24:20];
+                    funct3 = instruct[14:12];
                     Rd = instruct[11:7];
                     funct7 = instruct[31:25];
+                    $display("funct3: %b", funct3);
                     case (funct3)
                         3'b111: alu_op = 0; // AND
                         3'b110: alu_op = 1; // OR
@@ -139,6 +143,8 @@ module RISCVunicycle(clock,rst);
                 end
                 7'b0010011: begin // Tipo I
                     Rd = instruct[11:7];
+                    funct3 = instruct[14:12];
+                    $display("funct3: %b", funct3);
                     case (funct3)
                         3'b111: alu_op = 0; // ANDI
                         3'b110: alu_op = 1; // ORI
@@ -169,7 +175,6 @@ module RISCVunicycle(clock,rst);
         decode_done = 0; // Reinicia la señal de control
         case (opcode)
                 7'b0110011: begin // Tipo R
-                    
                     regenb = 1; // Habilitar escritura en registro
                     alu_src = D2; // Usar registro como entrada de la ALU
                 end
@@ -197,12 +202,15 @@ module RISCVunicycle(clock,rst);
     // Modificación del bloque actual para activar alu_ready
     always @(posedge aluSrc_cntrl_ready) begin
         aluSrc_cntrl_ready = 0; // Reinicia la señal de control
-
-        // Configuración de las entradas de la ALU
-        Aluin1 = D1; // Entrada 1 de la ALU (desde el registerfile)
-        Aluin2 = alu_src; // Entrada 2 de la ALU (desde el registerfile o ext_imm)
-        $display("Aluin1: %d", Aluin1);
-        $display("Aluin2: %d", Aluin2);
+        if (!last_instr_flag) begin
+            // Ejecución de la operación en la ALU
+            $display("Ejecutando operacion en la ALU");
+            // Configuración de las entradas de la ALU
+            Aluin1 = D1; // Entrada 1 de la ALU (desde el registerfile)
+            Aluin2 = alu_src; // Entrada 2 de la ALU (desde el registerfile o ext_imm)
+            $display("Aluin1: %d", Aluin1);
+            $display("Aluin2: %d", Aluin2);
+        end
 
         alu_ready = 1; // Indicar que la ALU está lista para ejecutarse
     end
@@ -210,34 +218,34 @@ module RISCVunicycle(clock,rst);
     // Nuevo módulo always para la ALU
     always @(posedge alu_ready) begin
         alu_ready = 0; // Reinicia la señal de control
+        if (!last_instr_flag) begin
+            // La salida de la ALU ya está conectada a ALUout a través del módulo RISCVALU
+            $display("Resultado de la ALU: %d", ALUout);
 
-        // Ejecución de la operación en la ALU
-        $display("Ejecutando operación en la ALU");
-        // La salida de la ALU ya está conectada a ALUout a través del módulo RISCVALU
-        $display("Resultado de la ALU: %d", ALUout);
-
-        // Control de flujo posterior a la ALU
-        if (mem_read) begin
-            addrs = ALUout; // Dirección para lectura de memoria
-            $display("Leyendo de memoria en dirección: %d", addrs);
-        end else if (mem_write) begin
-            addrs = ALUout; // Dirección para escritura en memoria
-            datainmemory = D2; // Datos a escribir en memoria
-            $display("Escribiendo en memoria en dirección: %d, valor: %d", addrs, datainmemory);
-        end else begin
-            dataregin = ALUout; // Resultado de la ALU para escritura en el registro destino
-            $display("Resultado listo para escritura en registro: %d", dataregin);
+            // Control de flujo posterior a la ALU
+            if (mem_read) begin
+                addrs = ALUout; // Dirección para lectura de memoria
+                $display("Leyendo de memoria en dirección: %d", addrs);
+            end else if (mem_write) begin
+                addrs = ALUout; // Dirección para escritura en memoria
+                datainmemory = D2; // Datos a escribir en memoria
+                $display("Escribiendo en memoria en dirección: %d, valor: %d", addrs, datainmemory);
+            end else begin
+                dataregin = ALUout; // Resultado de la ALU para escritura en el registro destino
+                $display("Resultado listo para escritura en registro: %d", dataregin);
+            end
         end
     end
-    always @(*) begin;
-        if (mem_read==1)begin
-            outp=dout;
+
+    always @(posedge last_instr_flag) begin
+        if (last_instr_flag==1) begin
+            $display("Program finished. Last instruction reached.");
+            finish_flag=1;
+            decode_done = 0; 
+            alu_ready = 0; 
+            aluSrc_cntrl_ready = 0;
+            $finish; // Terminar la simulación
         end
-        else begin
-            outp=ALUout;
-        end
-        dataregin=outp;
-        $display("entrada de datos: %d", dataregin);
-            
+
     end
 endmodule

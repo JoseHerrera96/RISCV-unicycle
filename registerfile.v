@@ -1,8 +1,8 @@
-module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock);
+module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock, finish_flag);
 
     input[4:0] Read1,Read2,RD;
     input[31:0] WriteData;
-    input RegWrite, clock;
+    input RegWrite, clock, finish_flag;
     output wire [31:0] Data1, Data2;
     reg [31:0] RF [31:0];
 
@@ -51,7 +51,7 @@ initial begin
 end
 
     always @(posedge clock) begin
-        if (RegWrite==1) 
+        if (RegWrite==1 && !finish_flag) 
             RF[RD]<=WriteData;
     end
 endmodule

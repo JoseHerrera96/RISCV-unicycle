@@ -1,16 +1,18 @@
-`timescale 1ms/1us
+`timescale 1s/1ms
 `include "RISCVunicycle.v"
 
 module RISCVunicycle_tb;
 
-    parameter CLK_PERIOD = 2; 
+    parameter CLK_PERIOD = 100; // Periodo del reloj 
 
     reg clock, rst;
+    wire last_instr_flag;
 
 
     RISCVunicycle dut(
         .clock(clock),
-        .rst(rst)
+        .rst(rst),
+        .finish_flag(finish_flag)
         
     );
     initial begin
@@ -18,9 +20,6 @@ module RISCVunicycle_tb;
         $dumpvars(0, RISCVunicycle_tb);
     end
 
-   //always begin
-        //#5 clock = ~clock;
-    //end
     initial begin
         rst=0;
         rst=1;
@@ -28,6 +27,17 @@ module RISCVunicycle_tb;
         rst=0;
     end
 
+    initial begin
+        clock=0;
+        forever #(CLK_PERIOD/2) clock = ~clock;
+    end
+
+    always @(posedge finish_flag) begin
+        $display("Test bench finished successfully.");
+        $finish;
+    end
+
+/*
     always begin
         clock=0;
         #1000;
@@ -52,8 +62,26 @@ module RISCVunicycle_tb;
         clock=1;
         $display(" ");
         #1000;
-        $finish;
+
+        clock=0;
+        #1000;
+        clock=1;
+        $display(" ");
+        #1000;
+
+        clock=0;
+        #1000;
+        clock=1;
+        $display(" ");
+        #1000;
         
+        clock=0;
+        #1000;
+        clock=1;
+        $display(" ");
+        #1000;        
     end
+
+    */
 
 endmodule
