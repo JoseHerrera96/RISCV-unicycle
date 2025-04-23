@@ -8,11 +8,8 @@ module instmemory(addr,instruct, last_instr_flag);
     for (integer i = 0; i < 32; i = i + 1) begin
         RF[i] = 32'hFFFFFFFF; // Inicializar registros a -1
     end
-    $readmemh("Test_typeR_typeI.hex", RF);
+    $readmemh("Instruction_set_R_I_S_L.hex", RF);
     $display("Memory initialized:");
-    for (integer i = 0; i < 32; i = i + 1) begin
-        $display("RF[%0d] = %h", i, RF[i]);
-    end
     end
     
 

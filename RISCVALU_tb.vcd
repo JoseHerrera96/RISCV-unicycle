@@ -1,11 +1,11 @@
 $date
-	Sat Apr 13 15:48:59 2024
+	Tue Apr 22 20:01:26 2025
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1ns
+	1ps
 $end
 $scope module RISCVALU_tb $end
 $var wire 1 ! zero $end
@@ -17,8 +17,8 @@ $scope module dut $end
 $var wire 32 & A [31:0] $end
 $var wire 4 ' ALUctl [3:0] $end
 $var wire 32 ( B [31:0] $end
-$var wire 1 ! zero $end
 $var reg 32 ) ALUout [31:0] $end
+$var reg 1 ! zero $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
@@ -50,33 +50,27 @@ b1 (
 b1001 #
 b1001 &
 #30000
-1!
-b0 "
-b0 )
+b110 "
+b110 )
 b110 $
 b110 '
-b1111 %
-b1111 (
-b1111 #
-b1111 &
+b10 %
+b10 (
+b1000 #
+b1000 &
 #40000
-0!
 b1 "
 b1 )
 b111 $
 b111 '
 b1001 %
 b1001 (
-b1000 #
-b1000 &
 #50000
-1!
 b0 "
 b0 )
 b1010 #
 b1010 &
 #60000
-0!
 b11111111111111111111111111110101 "
 b11111111111111111111111111110101 )
 b1100 $

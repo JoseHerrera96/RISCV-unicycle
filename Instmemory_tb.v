@@ -1,45 +1,63 @@
-//`timescale 1us/1ns
+`timescale 1ns/1ps
 `include "Instmemory.v"
-module instmemory_tb;
+`include "PC.v"
 
-    // Parámetros
-    parameter CLK_PERIOD = 2; // Periodo del reloj en unidades de tiempo
+module Instmemory_tb;
 
-    // Definición de señales
-    reg [31:0] Read1, WriteReg, WriteData;
-    reg RegWrite, clock;
-    wire [31:0] instruct;
+    reg clk, reset;
+    wire [31:0] pc_reg; // Salida del módulo PC
+    wire [31:0] instruct; // Instrucción actual
+    wire last_instr_flag; // Bandera de última instrucción
 
-    // Instancia del módulo a probar
-    instmemory uut(
-        .addr(Read1),
+    // Instancia del módulo PC
+    PC pc_counter(
+        .clk(clk),
+        .reset(reset),
+        .pc_reg(pc_reg),
+        .finish_flag(last_instr_flag) // Detener el PC cuando se alcance la última instrucción
+    );
+
+    // Instancia del módulo Instmemory
+    instmemory dut(
+        .addr(pc_reg), // Dirección de la instrucción actual
         .instruct(instruct),
-        .clock(clock)
+        .last_instr_flag(last_instr_flag)
     );
 
     initial begin
-        $dumpfile("instmemory_tb.vcd");
-        $dumpvars(0, instmemory_tb);
-    end
+        $dumpfile("Instmemory_tb.vcd");
+        $dumpvars(0, Instmemory_tb);
 
-    // Generación de clock
-    always #((CLK_PERIOD)/2) clock = ~clock;
-
-    // Inicialización de señales
-    initial begin
-        // Leer la instrucción de la memoria de instrucciones
-        Read1 = 0; // Leer de la dirección 0
-        // Simular un ciclo de reloj para leer los datos
-        #CLK_PERIOD;
-        // Cambiar la dirección de lectura
-        Read1 = 1; // Leer de la dirección 1
-        // Simular un ciclo de reloj para leer los datos
-        #CLK_PERIOD;
-        $display("instruccion= %h", instruct);
-    
-        // Finalizar la simulación
+        // Inicialización
+        clk = 0;
+        reset = 1;
+        $display(" ");
+        $display("Inicializando testbench de Instmemory...");
+        $display(" ");
+        $display("Estado inicial: reset = %b, PC = %h, instruccion = %h, last_instr_flag = %b", reset, pc_reg, instruct, last_instr_flag);
+        $display(" ");
+        // Desactivar reset después de un ciclo
+        #10 reset = 0;
+        $display("Reset desactivado");
+        $display(" ");
+        // Esperar a que se alcance la última instrucción
+        wait (last_instr_flag == 1);
+        $display(" ");
+        $display("Ultima instruccion alcanzada: PC = %h, instruccion = %h, last_instr_flag = %b", pc_reg, instruct, last_instr_flag);
+        $display(" ");
+        // Finalización del testbench
+        $display("testbench finalizado");
+        $display(" ");
         $finish;
     end
+
+    // Bloque para observar el comportamiento en cada flanco positivo del reloj
+    always @(posedge clk) begin
+        $display("PC = %h, instruccion = %h, last_instr_flag = %b", pc_reg, instruct, last_instr_flag);
+    end
+
+    // Generación del reloj
+    always #5 clk = ~clk;
 
 endmodule
 

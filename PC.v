@@ -1,5 +1,5 @@
-module PC (clk,reset, pc_reg, finish_flag, pcnext);
-input clk, reset,pcnext;
+module PC (clk,reset, pc_reg, finish_flag);
+input clk, reset;
 // Registro para el contador de programa
 output reg [31:0] pc_reg;
 input wire finish_flag;
@@ -14,7 +14,7 @@ end
 always @(posedge reset) begin
     if (reset==1) begin
         pc_reg = 32'hFFFFFFFF;
-        $display("PC reset: %d", pc_reg);
+        $display("PC reset: %h", pc_reg);
     end
 end
 endmodule

@@ -42,7 +42,7 @@ module RISCVunicycle_tb;
         clock=0;
         #1000;
         clock=1;
-        $display(" ");
+        
         #1000;
 
         clock=0;

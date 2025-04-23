@@ -3,7 +3,7 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
     input [3:0] ALUctl;
     input [31:0] A, B;
     output reg [31:0] ALUout;
-    output reg zero;
+    output reg zero=0;
 
    // assign zero = (ALUout==0);
 

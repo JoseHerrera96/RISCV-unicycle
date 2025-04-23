@@ -20,7 +20,7 @@ module RISCVunicycle(clock,rst,finish_flag);
     reg [6:0] opcode, funct7;
     reg [3:0] funct3;
     reg [3:0] alu_op;
-    reg mem_read, mem_write,regenb,pcnext;
+    reg mem_read, mem_write,regenb;
     reg [31:0] addrs,datainmemory, outp;
     wire [31:0] dout;
     wire zero;
@@ -35,8 +35,7 @@ module RISCVunicycle(clock,rst,finish_flag);
         .clk(clock),
         .reset(rst),
         .pc_reg(pc_out),
-        .finish_flag(finish_flag),
-        .pcnext(pcnext) 
+        .finish_flag(finish_flag)
     );
     instmemory modInstm(
         .addr(instaddr),
@@ -95,9 +94,9 @@ module RISCVunicycle(clock,rst,finish_flag);
             datainmemory = 32'd0;
             alu_src = 32'd0;
             regenb = 0;
-            decode_done = 0; // Señal para indicar que el decode ha terminado
-            alu_ready = 0;  // Señal para indicar que el registerF ha terminado
-            aluSrc_cntrl_ready = 0; // Señal para indicar el control de la ALU esta listo
+            decode_done = 0; 
+            alu_ready = 0;  
+            aluSrc_cntrl_ready = 0; 
             finish_flag=0;
             $display("reset done");
         end
@@ -109,6 +108,7 @@ module RISCVunicycle(clock,rst,finish_flag);
         if (!busy && !rst && !finish_flag) begin
             busy = 1; // Marca el bloque como ocupado
             // Decodificación de la instrucción
+            $display(" ");
             $display("PC: %d", pc_out);
             instaddr = pc_out;
             opcode = instruct[6:0];
@@ -225,11 +225,11 @@ module RISCVunicycle(clock,rst,finish_flag);
             // Control de flujo posterior a la ALU
             if (mem_read) begin
                 addrs = ALUout; // Dirección para lectura de memoria
-                $display("Leyendo de memoria en dirección: %d", addrs);
+                $display("Leyendo de memoria en direccion: %d", addrs);
             end else if (mem_write) begin
                 addrs = ALUout; // Dirección para escritura en memoria
                 datainmemory = D2; // Datos a escribir en memoria
-                $display("Escribiendo en memoria en dirección: %d, valor: %d", addrs, datainmemory);
+                $display("Escribiendo en memoria en direccion: %d, valor: %d", addrs, datainmemory);
             end else begin
                 dataregin = ALUout; // Resultado de la ALU para escritura en el registro destino
                 $display("Resultado listo para escritura en registro: %d", dataregin);

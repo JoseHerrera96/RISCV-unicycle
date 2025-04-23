@@ -1,45 +1,140 @@
 $date
-	Mon Apr 22 23:07:15 2024
+	Tue Apr 22 17:51:32 2025
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1s
+	1ps
 $end
-$scope module instmemory_tb $end
-$var wire 32 ! instruct [31:0] $end
-$var parameter 32 " CLK_PERIOD $end
-$var reg 32 # Read1 [31:0] $end
-$var reg 1 $ clock $end
-$scope module uut $end
-$var wire 1 % RegWrite $end
-$var wire 32 & WriteData [31:0] $end
-$var wire 32 ' WriteReg [31:0] $end
-$var wire 32 ( addr [31:0] $end
-$var wire 1 $ clock $end
-$var wire 32 ) instruct [31:0] $end
+$scope module Instmemory_tb $end
+$var wire 32 ! pc_reg [31:0] $end
+$var wire 1 " last_instr_flag $end
+$var wire 32 # instruct [31:0] $end
+$var reg 1 $ clk $end
+$var reg 1 % reset $end
+$scope module dut $end
+$var wire 32 & instruct [31:0] $end
+$var wire 32 ' addr [31:0] $end
+$var reg 1 " last_instr_flag $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 ( i [31:0] $end
+$upscope $end
+$upscope $end
+$scope module pc_counter $end
+$var wire 1 $ clk $end
+$var wire 1 " finish_flag $end
+$var wire 1 % reset $end
+$var reg 32 ) pc_reg [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b10 "
 $end
 #0
 $dumpvars
-b101000100000000010110011 )
-b0 (
-bz '
-bz &
-z%
-x$
-b0 #
-b101000100000000010110011 !
+b11111111111111111111111111111111 )
+b100000 (
+b11111111111111111111111111111111 '
+bx &
+1%
+0$
+bx #
+0"
+b11111111111111111111111111111111 !
 $end
-#2
-b1000000000100100000000100110011 !
-b1000000000100100000000100110011 )
-b1 #
-b1 (
-#4
+#5000
+1$
+#10000
+0$
+0%
+#15000
+b1100010000001110110011 #
+b1100010000001110110011 &
+b0 !
+b0 '
+b0 )
+1$
+#20000
+0$
+#25000
+b1000000010100110000010000110011 #
+b1000000010100110000010000110011 &
+b1 !
+b1 '
+b1 )
+1$
+#30000
+0$
+#35000
+b10100100111010010110011 #
+b10100100111010010110011 &
+b10 !
+b10 '
+b10 )
+1$
+#40000
+0$
+#45000
+b11000100110010100110011 #
+b11000100110010100110011 &
+b11 !
+b11 '
+b11 )
+1$
+#50000
+0$
+#55000
+b101000010000010110010011 #
+b101000010000010110010011 &
+b100 !
+b100 '
+b100 )
+1$
+#60000
+0$
+#65000
+b1100110111011000010011 #
+b1100110111011000010011 &
+b101 !
+b101 '
+b101 )
+1$
+#70000
+0$
+#75000
+b100100110011010010011 #
+b100100110011010010011 &
+b110 !
+b110 '
+b110 )
+1$
+#80000
+0$
+#85000
+b10000010010011100000011 #
+b10000010010011100000011 &
+b111 !
+b111 '
+b111 )
+1$
+#90000
+0$
+#95000
+b111000011010010000100011 #
+b111000011010010000100011 &
+b1000 !
+b1000 '
+b1000 )
+1$
+#100000
+0$
+#105000
+1"
+b11111111111111111111111111111111 #
+b11111111111111111111111111111111 &
+b1001 !
+b1001 '
+b1001 )
+1$
