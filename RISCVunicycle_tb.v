@@ -3,7 +3,7 @@
 
 module RISCVunicycle_tb;
 
-    parameter CLK_PERIOD = 100; // Periodo del reloj 
+    parameter CLK_PERIOD = 1000; // Periodo del reloj 
 
     reg clock, rst;
     wire last_instr_flag;
@@ -36,52 +36,5 @@ module RISCVunicycle_tb;
         $display("Test bench finished successfully.");
         $finish;
     end
-
-/*
-    always begin
-        clock=0;
-        #1000;
-        clock=1;
-        
-        #1000;
-
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;
-
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;
-
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;
-
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;
-
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;
-        
-        clock=0;
-        #1000;
-        clock=1;
-        $display(" ");
-        #1000;        
-    end
-
-    */
 
 endmodule

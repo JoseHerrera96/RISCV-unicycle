@@ -1,7 +1,7 @@
 module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock, finish_flag);
 
     input[4:0] Read1,Read2,RD;
-    input[31:0] WriteData;
+    input signed [31:0] WriteData;
     input RegWrite, clock, finish_flag;
     output wire [31:0] Data1, Data2;
     reg [31:0] RF [31:0];
@@ -11,9 +11,6 @@ module registerfile(Read1,Read2,RD,WriteData,RegWrite,Data1,Data2,clock, finish_
     always @* begin
         $display("Data1: %d", Data1);
         $display("Data2: %d", Data2);
-    end
-    always @* begin
-        $display("WriteData: %d", WriteData);
     end
 initial begin
     RF[5'd0] = 32'd0;   // x0: 
@@ -50,8 +47,11 @@ initial begin
     RF[5'd31] = 32'd0;  // x31
 end
 
-    always @(posedge clock) begin
-        if (RegWrite==1 && !finish_flag) 
-            RF[RD]<=WriteData;
+    always @(WriteData) begin
+        
+        if (RegWrite==1 && !finish_flag)
+         
+             $display("WriteData: %d", WriteData);
+            RF[RD]=WriteData;
     end
 endmodule

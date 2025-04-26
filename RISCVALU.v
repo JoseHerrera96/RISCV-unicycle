@@ -2,7 +2,7 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
 
     input [3:0] ALUctl;
     input [31:0] A, B;
-    output reg [31:0] ALUout;
+    output reg signed [31:0] ALUout;
     output reg zero=0;
 
    // assign zero = (ALUout==0);
@@ -24,9 +24,9 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
         endcase
 
     
-        if (ALUctl==4'd6)begin 
+        if (ALUctl==6)begin 
             if (ALUout==0)
-                zero <= 1;
+                zero = 1;
         end
     end
 endmodule

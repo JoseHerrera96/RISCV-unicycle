@@ -1,7 +1,7 @@
 module DataMemory (
     input wire clk,
     input wire [31:0] address,
-    input wire [31:0] write_data,
+    input wire signed [31:0] write_data,
     input wire write_enable,
     input wire read_enable,
     output reg [31:0] read_data
@@ -16,9 +16,9 @@ initial begin
 always @(posedge clk)
 begin
     if (write_enable)
-        memory[address[9:2]] <= write_data;
+        memory[address] <= write_data;
     if (read_enable)
-        read_data <= memory[address[9:2]];
+        read_data <= memory[address];
 end
 
 endmodule

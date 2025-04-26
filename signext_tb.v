@@ -4,15 +4,13 @@
 module signext_tb;
 
     reg [31:0] instruct;
-    reg [6:0] typ;
-    reg [11:0] inm;
-    wire [31:0] out;
+    reg signed [11:0] inm;
+    wire signed [31:0] out;
 
     // Instancia del módulo signext
     signext dut(
         .instruct(instruct),
-        .out(out),
-        .typ(typ)
+        .out(out)
     );
 
     initial begin
@@ -25,48 +23,65 @@ module signext_tb;
         $display(" ");
 
         // Prueba de Tipo I
-        typ = 7'b0010011; // Tipo I
-        instruct = 32'h00000FFF; // Inmediato positivo
-        inm = instruct[31:20];
-        #10;
-        $display("Tipo I (Positivo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        // Tipo I
+        instruct = 32'h00000093; // Inmediato positivo (0)
+        #50;
+        $display("Tipo I (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
 
-        instruct = 32'hFFFFF800; // Inmediato negativo
-        inm = instruct[31:20];
-        #10;
-        $display("Tipo I (Negativo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        instruct = 32'hFFF00093; // Inmediato negativo (-1)
+        #50;
+        $display("Tipo I (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
+
+        instruct = 32'h80000093; // Inmediato negativo (-2048)
+        #50;
+        $display("Tipo I (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
+
+        instruct = 32'h7FF00093; // Inmediato positivo (2047)
+        #50;
+        $display("Tipo I (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
 
         $display(" ");
 
         // Prueba de Tipo L
-        typ = 7'b0000011; // Tipo L
-        instruct = 32'h00000FFF; // Dirección de memoria positiva
-        inm = {instruct[31:25], instruct[11:7]}; 
-        #10;
-        $display("Tipo L (Positivo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        // Tipo L
+        instruct = 32'h00002003; // Dirección de memoria positiva (0)
+        #50;
+        $display("Tipo L (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
 
-        instruct = 32'hFFFFF800; // Dirección de memoria negativa
-        inm = {instruct[31:25], instruct[11:7]};
-        #10;
-        $display("Tipo L (Negativo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        instruct = 32'hFFF02003; // Dirección de memoria negativa (-1)
+        #50;
+        $display("Tipo L (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
+
+        instruct = 32'h80002003; // Dirección de memoria negativa (-2048)
+        #50;
+        $display("Tipo L (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
+
+        instruct = 32'h7FF02003; // Dirección de memoria positiva (2047)
+        #50;
+        $display("Tipo L (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed(instruct[31:20]), out);
 
         $display(" ");
 
         // Prueba de Tipo S
-        typ = 7'b0100011; // Tipo S
-        instruct = 32'h00000FFF; // Dirección de memoria positiva
-        inm = {instruct[31], instruct[7], instruct[30:25], instruct[11:8]};
-        #10;
-        $display("Tipo S (Positivo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        // Tipo S
+        instruct = 32'h00002023; // Dirección de memoria positiva (0)
+        #50;
+        $display("Tipo S (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed({instruct[31], instruct[30:25], instruct[11:7]}), out);
 
-        instruct = 32'hFFFFF800; // Dirección de memoria negativa
-        inm = {instruct[31], instruct[7], instruct[30:25], instruct[11:8]};
-        #10;
-        $display("Tipo S (Negativo): Instruccion = %h, Inm: %d, Extendido = %h", instruct, inm, out);
+        instruct = 32'hFFF02023; // Dirección de memoria negativa (-1)
+        #50;
+        $display("Tipo S (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed({instruct[31], instruct[30:25], instruct[11:7]}), out);
+
+        instruct = 32'h80002023; // Dirección de memoria negativa (-2048)
+        #50;
+        $display("Tipo S (Negativo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed({instruct[31], instruct[30:25], instruct[11:7]}), out);
+
+        instruct = 32'h7FF02023; // Dirección de memoria positiva (2047)
+        #50;
+        $display("Tipo S (Positivo): Instruccion = %h, Imm = %d, Extendido = %h", instruct, $signed({instruct[31], instruct[30:25], instruct[11:7]}), out);
 
         $display(" ");
         $display("Testbench finalizado.");
-        $display(" ");
         $finish;
     end
 

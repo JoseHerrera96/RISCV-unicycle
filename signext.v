@@ -1,28 +1,29 @@
-module signext(instruct,out,typ);
+module signext(instruct, out);
 
-input [31:0]instruct;
-reg [11:0] in, inL, inS;
-input [6:0] typ;
-output reg [31:0] out;
+    input [31:0] instruct;
+    reg [6:0] typ;
+    output reg signed [31:0] out = 0; // Inicializar a 0
 
-always @(instruct) begin
-    case(typ)
-        7'b0010011: begin
-                in = {{20{instruct[31]}}, instruct[31:20]}; // Tipo I
-                out = in; // Itype
-                $display("Itype: %d", in);
-                end
-        7'b0000011: begin
-                inL = {{20{instruct[31]}}, instruct[31:25], instruct[11:7]}; // Tipo L
-                out = inL; // Ltype
-                $display("Ltype: %d", inL);
-                end
-        7'b0100011:begin
-                inS = {{20{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:8]}; // Tipo S
-                out = inS; // Stype
-                $display("Stype: %d", inS);
-                end
-    endcase
+    always @(instruct) begin
+        typ= instruct[6:0]; // Obtener el tipo de instrucción
+        
+        case (typ)
+            7'b0010011: begin // Tipo I
+                out = {{20{instruct[31]}}, instruct[31:20]};
+                $display("Inm ext mod side: %h", out);
+            end
+            7'b0000011: begin // Tipo L
+                out = {{20{instruct[31]}}, instruct[31:20]};
+            end
+            7'b0100011: begin // Tipo S
+                out = {{20{instruct[31]}}, instruct[31:25], instruct[11:7]};
+            end
+            7'b1100011: begin // Tipo B (BEQ)
+                out = {{20{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:8]}; // Extensión de signo y alineación
+            end
+            default:
+                out = 32'b0; // Valor por defecto
+        endcase
+    end
 
-     end
 endmodule

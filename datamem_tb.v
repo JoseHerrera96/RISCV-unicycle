@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "datamem.v"
+
 module DataMemory_tb;
 
     // Parámetros
@@ -29,6 +30,7 @@ module DataMemory_tb;
         $dumpfile("DataMemory_tb.vcd");
         $dumpvars(0, DataMemory_tb);
     end
+
     // Generación de reloj
     always #((CLK_PERIOD)/2) clk = ~clk;
     
@@ -39,25 +41,41 @@ module DataMemory_tb;
         write_data = 0;
         write_enable = 0;
         read_enable = 0;
-        
+
+        $display(" ");
+        $display("Inicializando testbench de DataMemory...");
+        $display(" ");
+
         // Escribir datos en la memoria
-        #10 write_data = 32'hABCDEF01;
+        #10 write_data = 32'hDEADBEEF; // Dato 1
         write_enable = 1;
-        address = 0;
+        address = 32'h00000004; // Dirección 4
         #10;
-        
+        $display("[Escritura] Direccion: %h, Dato: %h", address, write_data);
+
+        #10 write_data = 32'hCAFEBABE; // Dato 2
+        address = 32'h00000008; // Dirección 8
+        #10;
+        $display("[Escritura] Direccion: %h, Dato: %h", address, write_data);
+
+        write_enable = 0;
+
         // Leer datos de la memoria
-        read_enable = 1;
+        #10 read_enable = 1;
+        address = 32'h00000004; // Leer dirección 4
         #10;
-        
-        // Detener simulación
+        $display("[Lectura] Direccion: %h, Dato: %h", address, read_data);
+
+        address = 32'h00000008; // Leer dirección 8
         #10;
+        $display("[Lectura] Direccion: %h, Dato: %h", address, read_data);
+
+        read_enable = 0;
+
+        $display(" ");
+        $display("Testbench finalizado.");
+        $display(" ");
         $finish;
-    end
-    
-    // Mostrar resultados
-    always @* begin
-        $display("Read Data: %h", read_data);
     end
 
 endmodule
