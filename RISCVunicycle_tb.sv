@@ -1,5 +1,5 @@
 `timescale 1s/1ms
-`include "RISCVunicycle.v"
+`include "RISCVunicycle.sv"
 
 module RISCVunicycle_tb;
 
