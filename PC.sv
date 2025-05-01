@@ -1,10 +1,10 @@
 module PC (clk,reset, pc_reg, finish_flag, branch, branch_offset);
 input clk, reset, branch;
 // Registro para el contador de programa
-output reg signed [31:0] pc_reg = 32'hFFFFFFFC;; // Inicializar a -4
-input wire finish_flag;
-input wire signed [31:0] branch_offset; // Offset para el salto
-reg signed [31:0] pc_reg_next = 32'sd4; // Registro para el siguiente valor del PC
+output logic signed [31:0] pc_reg = 32'hFFFFFFFC;; // Inicializar a -4
+input logic finish_flag;
+input logic signed [31:0] branch_offset; // Offset para el salto
+logic signed [31:0] pc_reg_next = 32'sd4; // Registro para el siguiente valor del PC
 
 // Lógica del contador de programa
 

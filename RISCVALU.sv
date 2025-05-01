@@ -1,9 +1,9 @@
 module RISCVALU(ALUctl, A, B, ALUout, zero);
 
-    input [3:0] ALUctl;
-    input [31:0] A, B;
-    output reg signed [31:0] ALUout;
-    output reg zero=0;
+    input logic [3:0] ALUctl;
+    input logic [31:0] A, B;
+    output logic signed [31:0] ALUout;
+    output logic zero=0;
 
    // assign zero = (ALUout==0);
 

@@ -1,13 +1,13 @@
 `timescale 1ns/1ps
-`include "Instmemory.v"
-`include "PC.v"
+`include "Instmemory.sv"
+`include "PC.sv"
 
 module Instmemory_tb;
 
-    reg clk, reset;
-    wire [31:0] pc_reg; // Salida del módulo PC
-    wire [31:0] instruct; // Instrucción actual
-    wire last_instr_flag; // Bandera de última instrucción
+    logic clk, reset;
+    logic [31:0] pc_reg; // Salida del módulo PC
+    logic [31:0] instruct; // Instrucción actual
+    logic last_instr_flag; // Bandera de última instrucción
 
     // Instancia del módulo PC
     PC pc_counter(

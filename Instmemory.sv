@@ -1,11 +1,11 @@
 module instmemory(addr,instruct, last_instr_flag);
-    input wire [31:0] addr; // Dirección de la instrucción actual
-    output wire [31:0] instruct; // Instrucción actual
-    reg [31:0] file [0:31]; 
-    reg [7:0] RF [0:127]; // 128 espacios de 8 bits cada uno # 32 registros de 32 bits
-    reg [31:0] instruct_temp, full_RF_temp; // Instrucción actual
-    output reg last_instr_flag=0; // Bandera para indicar la última instrucción
-    reg [31:0] d = 32'd0; // Inicializar el contador d correctamente
+    input logic [31:0] addr; // Dirección de la instrucción actual
+    output logic [31:0] instruct; // Instrucción actual
+    logic [31:0] file [0:31]; 
+    logic [7:0] RF [0:127]; // 128 espacios de 8 bits cada uno # 32 registros de 32 bits
+    logic [31:0] instruct_temp, full_RF_temp; // Instrucción actual
+    output logic last_instr_flag=0; // Bandera para indicar la última instrucción
+    logic [31:0] d = 32'd0; // Inicializar el contador d correctamente
 
    initial begin
 

@@ -1,8 +1,8 @@
 module signext(instruct, out);
 
-    input [31:0] instruct;
-    reg [6:0] typ;
-    output reg signed [31:0] out = 0; // Inicializar a 0
+    input logic [31:0] instruct;
+    logic [6:0] typ;
+    output logic signed [31:0] out = 0; // Inicializar a 0
 
     always @(instruct) begin
         typ= instruct[6:0]; // Obtener el tipo de instrucción

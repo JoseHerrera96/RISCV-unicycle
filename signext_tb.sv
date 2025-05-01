@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
-`include "signext.v"
+`include "signext.sv"
 
 module signext_tb;
 
-    reg [31:0] instruct;
-    reg signed [11:0] inm;
-    wire signed [31:0] out;
+    logic [31:0] instruct;
+    logic signed [11:0] inm;
+    logic signed [31:0] out;
 
     // Instancia del módulo signext
     signext dut(

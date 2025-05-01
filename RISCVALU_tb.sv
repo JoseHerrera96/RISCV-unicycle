@@ -3,10 +3,10 @@
 
 module RISCVALU_tb;
 
-    reg [3:0] ALUctl;
-    reg [31:0] A, B;
-    wire [31:0] ALUout;
-    wire zero;
+    logic [3:0] ALUctl;
+    logic [31:0] A, B;
+    logic [31:0] ALUout;
+    logic zero;
 
     // Instancia del módulo RISCVALU
     RISCVALU dut(

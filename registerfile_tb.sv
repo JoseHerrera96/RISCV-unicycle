@@ -1,15 +1,15 @@
 `timescale 1ns/1ps
-`include "registerfile.v"
+`include "registerfile.sv"
 
 module registerfile_tb;
 
     parameter CLK_PERIOD = 10; // Periodo del reloj
 
-    reg [4:0] Read1, Read2, WriteReg;
-    reg [31:0] WriteData;
-    reg RegWrite, clock;
-    wire [31:0] Data1, Data2;
-    reg finish_flag;
+    logic [4:0] Read1, Read2, WriteReg;
+    logic [31:0] WriteData;
+    logic RegWrite, clock;
+    logic [31:0] Data1, Data2;
+    logic finish_flag;
 
     // Instancia del módulo registerfile
     registerfile uut(

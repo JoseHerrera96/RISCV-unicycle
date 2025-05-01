@@ -8,31 +8,31 @@
 
 module RISCVunicycle(clock,rst,finish_flag);
 
-    input wire clock;
-    input wire rst;
-    wire [31:0] PC, D1, D2;
-    reg[31:0] Aluin1,Aluin2;
-    reg signed [31:0] dataregin;
-    reg [4:0] R1,R2,Rd;
-    wire signed [31:0] ALUout;
-    wire[31:0] instruct; 
-    wire signed [31:0] pc_out;
-    reg signed [11:0] imm; 
-    wire signed [31:0] ext_imm;
-    reg [6:0] opcode, funct7;
-    reg [3:0] funct3;
-    reg [3:0] alu_op;
-    reg mem_read, mem_write,regenb,branch;
-    reg [31:0] addrs, outp;
-    reg signed [31:0] datainmemory;
-    wire signed [31:0] dout;
-    wire zero;
-    reg [31:0]alu_src;
-    reg busy = 0; // Señal de control para evitar ejecución simultánea
-    reg decode_done, alu_ready, aluSrc_cntrl_ready, lw_data_ready, decode_begin; // Señales de control para la ejecución
-    wire last_instr_flag; // Bandera para indicar que el programa ha terminado
-    output reg finish_flag; // Bandera para indicar que el programa ha terminado
-    reg signed [31:0] branch_offset; // Desplazamiento para el salto condicional
+    input logic clock;
+    input logic rst;
+    logic [31:0] PC, D1, D2;
+    logic[31:0] Aluin1,Aluin2;
+    logic signed [31:0] dataregin;
+    logic [4:0] R1,R2,Rd;
+    logic signed [31:0] ALUout;
+    logic[31:0] instruct; 
+    logic signed [31:0] pc_out;
+    logic signed [11:0] imm; 
+    logic signed [31:0] ext_imm;
+    logic [6:0] opcode, funct7;
+    logic [3:0] funct3;
+    logic [3:0] alu_op;
+    logic mem_read, mem_write,regenb,branch;
+    logic [31:0] addrs, outp;
+    logic signed [31:0] datainmemory;
+    logic signed [31:0] dout;
+    logic zero;
+    logic [31:0]alu_src;
+    logic busy = 0; // Señal de control para evitar ejecución simultánea
+    logic decode_done, alu_ready, aluSrc_cntrl_ready, lw_data_ready, decode_begin; // Señales de control para la ejecución
+    logic last_instr_flag; // Bandera para indicar que el programa ha terminado
+    output logic finish_flag; // Bandera para indicar que el programa ha terminado
+    logic signed [31:0] branch_offset; // Desplazamiento para el salto condicional
     // modulos
 
     PC modPC(
@@ -141,6 +141,7 @@ module RISCVunicycle(clock,rst,finish_flag);
 
             case (opcode)
                 7'b0110011: begin // Tipo R
+                    $display("tipo R");
                     R2 = instruct[24:20];
                     funct3 = instruct[14:12];
                     Rd = instruct[11:7];
@@ -173,9 +174,9 @@ module RISCVunicycle(clock,rst,finish_flag);
                     $display("R2: %d", R2);
                     $display("D1: %d", D1);
                     $display("D2: %d", D2);
-                    $display("tipo R");
                 end
                 7'b0010011: begin // Tipo I
+                    $display("tipo I");
                     Rd = instruct[11:7];
                     funct3 = instruct[14:12];
                     imm = instruct[31:20]; // Inmediato
@@ -197,28 +198,26 @@ module RISCVunicycle(clock,rst,finish_flag);
                     endcase
                     $display("R1: %d", R1);
                     $display("D1: %d", D1);
-
-                    $display("tipo I");
                 end
                 7'b0000011: begin // Load Word (LW)
+                    $display("Load word");
                     Rd = instruct[11:7];
                     imm = instruct[31:20]; // Inmediato
                     alu_op = 3'b010;
                     $display("Registro destino: %d", Rd);
-                    $display("Load word");
                 end
                 7'b0100011: begin // Store Word (SW)
+                    $display("store word");
                     imm = {instruct[31], instruct[30:25], instruct[11:7]}; // Inmediato
                     alu_op = 3'b010;
-                    $display("store word");
                 end
                 7'b1100011: begin // Branch (BEQ)
+                    $display("branch?");
                     alu_op = 6;
                     R2 = instruct[24:20];
                     funct3 = instruct[14:12];
                     imm = {{20{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:9],1'b0}; // Inmediato
                     branch_offset = ext_imm; // Guardar el desplazamiento de salto
-                    $display("Will it branch?");
                 end
             endcase
 

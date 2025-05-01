@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
-`include "PC.v"
+`include "PC.sv"
 
 module PC_tb;
 
-    reg clk, reset;
-    reg finish_flag;
-    wire [31:0] pc_reg;
+    logic clk, reset;
+    logic finish_flag;
+    logic [31:0] pc_reg;
 
     // Instancia del módulo PC
     PC dut(

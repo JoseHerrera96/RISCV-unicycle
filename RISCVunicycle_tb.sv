@@ -5,8 +5,8 @@ module RISCVunicycle_tb;
 
     parameter CLK_PERIOD = 1000; // Periodo del reloj 
 
-    reg clock, rst;
-    wire last_instr_flag;
+    logic clock, rst;
+    logic last_instr_flag;
 
 
     RISCVunicycle dut(

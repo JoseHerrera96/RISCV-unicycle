@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "datamem.v"
+`include "datamem.sv"
 
 module DataMemory_tb;
 
@@ -7,14 +7,14 @@ module DataMemory_tb;
     parameter CLK_PERIOD = 10; // Periodo de reloj en unidades de tiempo
     
     // Señales de entrada
-    reg clk;
-    reg [31:0] address;
-    reg [31:0] write_data;
-    reg write_enable;
-    reg read_enable;
+    logic clk;
+    logic [31:0] address;
+    logic [31:0] write_data;
+    logic write_enable;
+    logic read_enable;
     
     // Señales de salida
-    wire [31:0] read_data;
+    logic [31:0] read_data;
     
     // Instancia del módulo DataMemory
     DataMemory data_memory (

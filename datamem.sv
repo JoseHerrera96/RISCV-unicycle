@@ -1,14 +1,14 @@
 module DataMemory (
-    input wire clk,
-    input wire [31:0] address,
-    input wire signed [31:0] write_data,
-    input wire write_enable,
-    input wire read_enable,
-    output reg [31:0] read_data
+    input logic clk,
+    input logic [31:0] address,
+    input logic signed [31:0] write_data,
+    input logic write_enable,
+    input logic read_enable,
+    output logic [31:0] read_data
 );
 
 // Memoria de datos
-reg [31:0] memory [0:255]; // Memoria de 256 palabras de 32 bits
+logic [31:0] memory [0:255]; // Memoria de 256 palabras de 32 bits
 initial begin
         $readmemh("ProyectoCorto_data.hex", memory); // Cargar instrucciones desde un archivo hexadecimal
     end
