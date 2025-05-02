@@ -1,9 +1,10 @@
-module RISCVALU(ALUctl, A, B, ALUout, zero);
+module RISCVALU(ALUctl, A, B, ALUout, zero, reset_zero_flag);
 
     input logic [3:0] ALUctl;
     input logic [31:0] A, B;
     output logic signed [31:0] ALUout;
     output logic zero=0;
+    input logic reset_zero_flag;
 
    // assign zero = (ALUout==0);
 
@@ -22,11 +23,15 @@ module RISCVALU(ALUctl, A, B, ALUout, zero);
             default: ALUout <= 0;
 
         endcase
-
-    
         if (ALUctl==6)begin 
             if (ALUout==0)
                 zero = 1;
         end
     end
+
+
+    always @(posedge reset_zero_flag) begin
+        zero = 0;
+    end
+
 endmodule

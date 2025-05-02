@@ -3,7 +3,7 @@
 
 module RISCVunicycle_tb;
 
-    parameter CLK_PERIOD = 1000; // Periodo del reloj 
+    parameter CLK_PERIOD = 10; // Periodo del reloj 
 
     logic clock, rst;
     logic last_instr_flag;

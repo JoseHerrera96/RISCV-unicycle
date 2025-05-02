@@ -19,7 +19,8 @@ module signext(instruct, out);
                 out = {{20{instruct[31]}}, instruct[31:25], instruct[11:7]};
             end
             7'b1100011: begin // Tipo B (BEQ)
-                out = {{20{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:9],1'b0}; // Extensión de signo y alineación
+                out = {{19{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:8],1'b0}; // Extensión de signo y alineación
+                $display("Inm ext mod side: %h", out);
             end
             default:
                 out = 32'b0; // Valor por defecto

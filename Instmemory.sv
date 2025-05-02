@@ -25,7 +25,7 @@ module instmemory(addr,instruct, last_instr_flag);
         
         instruct_temp = file[0]; // Leer la primera instrucción del archivo
         d = 32'd0; // Asegurar que d se inicialice antes del bucle
-        for (integer i = 0; i < 32; i = i + 1) begin        
+        for (integer i = 1; i < 32; i = i + 1) begin        
             RF[d] = instruct_temp[7:0]; // Mostrar el contenido de cada registro
             RF[d+1] = instruct_temp[15:8];
             RF[d+2] = instruct_temp[23:16];
@@ -38,8 +38,15 @@ module instmemory(addr,instruct, last_instr_flag);
             end 
         
         end
-
-
+        
+    /*
+        for (integer i = 0; i < 32; i = i + 1) begin
+            $display("RF[%0d]: %h", i, RF[i]);
+            if ((i+1)%4 == 0) begin
+                $display("\n"); // Salto de línea cada 4 registros
+            end
+        end
+*/
         $display("Memory initialized:");
     
     end

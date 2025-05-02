@@ -33,6 +33,7 @@ module RISCVunicycle(clock,rst,finish_flag);
     logic last_instr_flag; // Bandera para indicar que el programa ha terminado
     output logic finish_flag; // Bandera para indicar que el programa ha terminado
     logic signed [31:0] branch_offset; // Desplazamiento para el salto condicional
+    logic reset_zero_flag; // Señal de control para la ALU
     // modulos
 
     PC modPC(
@@ -64,7 +65,8 @@ module RISCVunicycle(clock,rst,finish_flag);
         .A(Aluin1),
         .B(Aluin2),
         .ALUout(ALUout),
-        .zero(zero)
+        .zero(zero),
+        .reset_zero_flag(reset_zero_flag) // Conectar la señal de control de la ALU
     );
     DataMemory modmemory(
         .clk(clock),
@@ -83,29 +85,30 @@ module RISCVunicycle(clock,rst,finish_flag);
     if (!busy) begin
         busy = 1; // Marca el bloque como ocupado
         if (rst == 1) begin
-            R1 = 5'd0; // Reset de señales
-            R2 = 5'd0;
-            Rd = 5'd0;
-            opcode = 7'd0;
-            funct3 = 7'd0;
-            Aluin1 = 32'd0;
-            Aluin2 = 32'd0;
-            imm = 12'd0;
-            alu_op = 4'd0;
-            mem_read = 0; 
-            mem_write = 0;
-            addrs = 32'd0;
-            datainmemory = 32'd0;
-            alu_src = 32'd0;
-            regenb = 0;
-            decode_done = 0; 
-            alu_ready = 0;  
-            aluSrc_cntrl_ready = 0; 
-            finish_flag=0;
-            branch = 0;
-            branch_offset = 32'd0; // Inicializa el desplazamiento de salto
-            lw_data_ready = 0; // Inicializa la bandera de última instrucción
-            decode_begin = 0; // Inicializa la bandera de decodificación
+            R1 <= 5'd0; // Reset de señales
+            R2 <= 5'd0;
+            Rd <= 5'd0;
+            opcode <= 7'd0;
+            funct3 <= 7'd0;
+            Aluin1 <= 32'd0;
+            Aluin2 <= 32'd0;
+            imm <= 12'd0;
+            alu_op <= 4'd0;
+            mem_read <= 0; 
+            mem_write <= 0;
+            addrs <= 32'd0;
+            datainmemory <= 32'd0;
+            alu_src <= 32'd0;
+            regenb <= 0;
+            decode_done <= 0; 
+            alu_ready <= 0;  
+            aluSrc_cntrl_ready <= 0; 
+            finish_flag <= 0;
+            branch <= 0;
+            branch_offset <= 32'd0; // Inicializa el desplazamiento de salto
+            lw_data_ready <= 0; // Inicializa la bandera de última instrucción
+            decode_begin <= 0; // Inicializa la bandera de decodificación
+            reset_zero_flag <= 0; // Inicializa la bandera de última instrucción
             $display("reset done");
         end
         busy = 0; // Libera el bloqueo
@@ -117,11 +120,15 @@ module RISCVunicycle(clock,rst,finish_flag);
             regenb = 1;
             dataregin = dout; // Cargar datos desde la memoria
             $display("Cargando datos desde memoria: %d", dataregin);
+            if (zero==1) begin
+                reset_zero_flag=1; // Reinicia la señal de control
+            end
         end
         decode_begin = 1; // Indica que la decodificación ha comenzado
     end
     // decoder
     always @(posedge decode_begin) begin
+        reset_zero_flag=0;
         regenb = 0;
         mem_read = 0;
         branch = 0;
