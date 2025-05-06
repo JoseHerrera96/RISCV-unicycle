@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
-`include "Instmemory.sv"
-`include "PC.sv"
+`include "../src/Instmemory.sv"
+`include "../src/PC.sv"
 
 module Instmemory_tb;
 

@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "signext.sv"
+`include "../src/signext.sv"
 
 module signext_tb;
 

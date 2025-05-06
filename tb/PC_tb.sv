@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "PC.sv"
+`include "../src/PC.sv"
 
 module PC_tb;
 
