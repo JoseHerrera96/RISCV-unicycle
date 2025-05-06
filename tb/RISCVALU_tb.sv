@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "RISCVALU.sv"
+`include "../src/RISCVALU.sv"
 
 module RISCVALU_tb;
 

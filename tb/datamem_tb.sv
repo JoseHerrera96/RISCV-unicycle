@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "datamem.sv"
+`include "../src/datamem.sv"
 
 module DataMemory_tb;
 

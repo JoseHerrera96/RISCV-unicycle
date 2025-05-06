@@ -1,66 +1,55 @@
-# Proyecto corto: Implementación de un procesador básico uniciclo basado en `rv32i`
-### EL3310 - Diseño de Sistemas Digitales
-### Escuela de Ingeniería Electrónica
-### Tecnológico de Costa Rica
+Este repositorio contiene la implementación de un procesador uniciclo basado en la arquitectura RISC-V (rv32i) para el curso EL3310 - Diseño de Sistemas Digitales, TEC.
 
-<br/><br/>
+## Descripción General
+El objetivo de este proyecto es diseñar, implementar y simular un procesador RISC-V de un solo ciclo (uniciclo) utilizando SystemVerilog. El procesador es capaz de ejecutar instrucciones básicas del conjunto rv32i y se valida mediante testbenches y programas de prueba.
 
-## Preámbulo
+## Estructura del Proyecto
+- **src/**: Archivos fuente SystemVerilog de los módulos principales:
+  - ALU (`RISCVALU.sv`)
+  - Memoria de datos (`datamem.sv`)
+  - Memoria de instrucciones (`Instmemory.sv`)
+  - Banco de registros (`registerfile.sv`)
+  - Program Counter (`PC.sv`)
+  - Extensor de signo (`signext.sv`)
+  - Top module (`RISCVunicycle.sv`)
+- **tb/**: Testbenches y archivos de simulación para cada módulo y el procesador completo. Incluye archivos `.vvp` y `.vcd` generados tras la simulación.
+- **hex/**: Archivos de memoria en formato `.hex` para cargar instrucciones y datos en la simulación. Ejemplos: `ProyectoCorto_instructions.hex`, `FinalT.hex`.
+- **RISC-V-Single-Cycle-Processor/** y **RISC-V-Unicycle-Processor/**: Carpetas adicionales con Makefiles para automatizar compilación/simulación (opcional).
 
-Para el desarrollo de este proyecto corto, usted deberá guiarse por la documentación que se encuentra en el capítulo 2 del libro *Computer Organization and Design: The Hardware Software Interface, RISC-V edition*.
+## Requisitos
+- [Icarus Verilog](http://iverilog.icarus.com/) (recomendado para compilar y simular en Windows)
+- Visualizador de ondas como GTKWave (opcional, para archivos `.vcd`)
+
+## Instrucciones de Compilación y Simulación
+1. Abre una terminal en la carpeta raíz del proyecto.
+2. Para compilar y simular un módulo, por ejemplo `datamem`:
+   ```sh
+   iverilog -o tb/datamem_tb.vvp src/datamem.sv tb/datamem_tb.sv
+   vvp tb/datamem_tb.vvp
+   ```
+3. Para ver las señales en GTKWave:
+   ```sh
+   gtkwave tb/datamem_tb.vcd
+   ```
+4. Para simular el procesador completo:
+   ```sh
+   iverilog -o tb/RISCVunicycle_tb.vvp src/*.sv tb/RISCVunicycle_tb.sv
+   vvp tb/RISCVunicycle_tb.vvp
+   gtkwave tb/RISCVunicycle_tb.vcd
+   ```
+
+## Uso de Archivos .hex
+Los archivos `.hex` contienen instrucciones o datos que se cargan en las memorias durante la simulación. Puedes modificar o agregar nuevos archivos `.hex` en la carpeta `hex/` según los programas de prueba que desees ejecutar.
+
+## Agregar Nuevos Módulos o Testbenches
+- Crea el archivo fuente en `src/` y su testbench en `tb/`.
+- Sigue la convención de nombres: `<modulo>.sv` y `<modulo>_tb.sv`.
+- Actualiza los comandos de compilación según corresponda.
+
+## Créditos
+Proyecto realizado para el curso EL3310 - Diseño de Sistemas Digitales, TEC.
+
+---
 
 
-## Procesador uniciclo basado en `rv32i`
-
-De acuerdo con lo visto en clase, usted desarrollará un procesador uniciclo como el que muestra en la siguiente figura.
-
-![Diagrama de bloques para el procesador uniciclo](https://github.com/TEC-EL3310/proyecto1/blob/main/figs/uniclycle.png?raw=true "Diagrama de bloques de un procesador uniciclo basado en `rv32i`")
-
-
-Para este proyecto, usted implementará los siguientes bloques funcionales:
-- ALU
-- Archivo de registros
-- Memoria de instrucciones
-- Memoria de datos
-- Generador de inmediatos
-- Unidad de control
-- ALU control
-
-además de los sumadores y multiplexores necesarios para completar su implementación. Asegúrese de desarrollar un *testbench* para cada uno de los anteriores bloques, de manera que tenga certeza de su funcionalidad antes de integrarlos para construir su procesador.
-
-Las instrucciones que su implementación deberá soportar son, al menos,
-```asm
-add
-sub
-and
-or
-lw
-sw
-beq
-```
-
-## Programas de prueba
-Deberá escribir al menos 2 programas, en lenguaje ensamblador, que le permitan estresar su diseño y asegurarse de que funciona apropiadamente para el soporte de las instrucciones esperadas. Dichos programas deben tener algún sentido algorítmico y no ser simplemente una serie de instrucciones que no ejecutan algo con sentido.
-
-
-## Evaluación
-Este proyecto corto se evaluará con la siguiente rúbrica. Se entregará con anterioridad a la revisión el archivo `.hex` para el rubro "Validación funcional del procesador con programa proveído".
-
-
-| Rubro | % | C | EP | D | NP |
-|-------|---|---|----|---|----|
-|Desarrollo de bloques individuales| 20 |   |    |   |    |
-|Validación funcional de bloques individuales mediante testbenches |20|   |    |   |    |
-|Programas de prueba desarollados |10|   |    |   |    |
-|Integración del procesador |10|   |    |   |    |
-|Validación funcional del procesador con programas de desarrollados  |10|   |    |   |    |
-|Validación funcional del procesador con programa proveído  |20|   |    |   |    |
-|Uso de repositorio |10|   |    |   |    |
-
-C: Completo,
-EP: En progreso ($\times 0,8$),
-D: Deficiente ($\times 0,5$),
-NP: No presenta ($\times 0$)
-
-La revisión de este proyecto corto se realizará durante la clase del viernes 5 de abril de 2024. PAra el rubro de "Uso de repositorio" se que existan contribuciones de todos los miembros del equipo. El último _commit_ debe registrarte antes de las 17:00 del viernes 5 de abril de 2024.
 

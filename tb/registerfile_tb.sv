@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "registerfile.sv"
+`include "../src/registerfile.sv"
 
 module registerfile_tb;
 
