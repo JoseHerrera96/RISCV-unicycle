@@ -1,10 +1,10 @@
 `timescale 1us/1ns
-`include "instmemory.sv"
-`include "registerfile.sv"
-`include "RISCVALU.sv"
-`include "datamem.sv"
-`include "signext.sv"
-`include "PC.sv"
+`include "../src/instmemory.sv"
+`include "../src/registerfile.sv"
+`include "../src/RISCVALU.sv"
+`include "../src/datamem.sv"
+`include "../src/signext.sv"
+`include "../src/PC.sv"
 
 module RISCVunicycle(clock,rst,finish_flag);
 
@@ -156,26 +156,23 @@ module RISCVunicycle(clock,rst,finish_flag);
                     $display("funct3: %b", funct3);
                     $display("Registro destino: %d", Rd);
                     case (funct3)
-                        3'b111: begin
-                            alu_op = 0; // AND
-                                $display("AND");
-                        end
-                        3'b110:begin
-                                alu_op = 1; // OR
-                                $display("OR");
-                        end
+                        3'b111: alu_op = 0; // AND
+                        3'b110: alu_op = 1; // OR
                         3'b000: begin
                             case (funct7)
-                                7'b0000000:begin
-                                alu_op = 2; // ADD
-                                $display("ADD");
-                                end
-                                7'b0100000:begin
-                                alu_op = 6; // SUB
-                                $display("SUB");
-                                end
+                                7'b0000000: alu_op = 2; // ADD
+                                7'b0100000: alu_op = 6; // SUB
                             endcase
                         end
+                        3'b001: alu_op = 8; // SLL
+                        3'b101: begin
+                            case (funct7)
+                                7'b0000000: alu_op = 9; // SRL
+                                7'b0100000: alu_op = 10; // SRA
+                            endcase
+                        end
+                        3'b010: alu_op = 7; // SLT
+                        3'b011: alu_op = 11; // SLTU
                     endcase
                     $display("R1: %d", R1);
                     $display("R2: %d", R2);
@@ -186,21 +183,20 @@ module RISCVunicycle(clock,rst,finish_flag);
                     $display("tipo I");
                     Rd = instruct[11:7];
                     funct3 = instruct[14:12];
-                    imm = instruct[31:20]; // Inmediato
                     $display("Registro destino: %d", Rd);
                     $display("funct3: %b", funct3);
                     case (funct3)
-                        3'b111: begin
-                            alu_op = 0; // ANDI
-                            $display("ANDI");
-                        end
-                        3'b110: begin
-                            alu_op = 1; // ORI
-                            $display("ORI");
-                        end
-                        3'b000: begin
-                            alu_op = 2; // ADDI
-                            $display("ADDI");
+                        3'b111: alu_op = 0; // ANDI
+                        3'b110: alu_op = 1; // ORI
+                        3'b000: alu_op = 2; // ADDI
+                        3'b010: alu_op = 7; // SLTI
+                        3'b011: alu_op = 11; // SLTIU
+                        3'b001: alu_op = 8; // SLLI
+                        3'b101: begin
+                            case (instruct[31:25])
+                                7'b0000000: alu_op = 9; // SRLI
+                                7'b0100000: alu_op = 10; // SRAI
+                            endcase
                         end
                     endcase
                     $display("R1: %d", R1);
@@ -210,21 +206,54 @@ module RISCVunicycle(clock,rst,finish_flag);
                     $display("Load word");
                     Rd = instruct[11:7];
                     imm = instruct[31:20]; // Inmediato
-                    alu_op = 3'b010;
+                    alu_op = 2; // ADD
                     $display("Registro destino: %d", Rd);
                 end
                 7'b0100011: begin // Store Word (SW)
                     $display("store word");
-                    imm = {instruct[31], instruct[30:25], instruct[11:7]}; // Inmediato
-                    alu_op = 3'b010;
+                    alu_op = 2; // ADD
                 end
-                7'b1100011: begin // Branch (BEQ)
+                7'b1100011: begin // Branches (BEQ, BNE, BLT, BGE)
                     $display("branch?");
-                    alu_op = 6;
                     R2 = instruct[24:20];
+                    $display("R2: %d", R2);
+                    $display("D2: %d", D2);
                     funct3 = instruct[14:12];
-                    imm = {{20{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:9],1'b0}; // Inmediato
                     branch_offset = ext_imm; // Guardar el desplazamiento de salto
+                    case (funct3)
+                        3'b000: alu_op = 6; // BEQ (SUB)
+                        3'b001: alu_op = 6; // BNE (SUB)
+                        3'b100: alu_op = 7; // BLT (SLT)
+                        3'b101: alu_op = 7; // BGE (SLT)
+                    endcase
+                end
+                7'b1101111: begin // JAL
+                    $display("JAL");
+                    $display("R1: %d", R1);
+                    $display("D1: %d", D1);
+                    $display("funct3: %b", funct3);
+                    Rd = instruct[11:7];
+                    imm = {instruct[31], instruct[19:12], instruct[20], instruct[30:21], 1'b0};
+                    branch = 1;
+                    branch_offset = ext_imm;
+                    dataregin = pc_out + 4; // Dirección de retorno
+                    regenb = 1;
+                end
+                7'b1100111: begin // JALR
+                    $display("JALR");
+                    Rd = instruct[11:7];
+                    R1 = instruct[19:15];
+                    imm = instruct[31:20];
+                    $display("R1: %d", R1);
+                    $display("D1: %d", D1);
+                    branch = 1;
+                    if (D1 > pc_out)
+                        branch_offset = D1 - pc_out;
+                    else
+                        branch_offset = -(pc_out - D1);
+                    branch_offset = branch_offset & ~1; // Dirección de salto
+                    dataregin = pc_out + 4; // Dirección de retorno
+                    regenb = 1;
                 end
             endcase
 
@@ -260,12 +289,23 @@ module RISCVunicycle(clock,rst,finish_flag);
                     $display("imm: %d", imm);
                     $display("ext_imm: %d", ext_imm);
                 end
-                7'b1100011: begin // Branch (BEQ)
-                    alu_src = D2; // Usar registro como entrada de la ALU
+                7'b1100011: begin // Branches (BEQ, BNE, BLT, BGE)
+                    case (funct3)
+                        3'b000, 3'b001: alu_src = D2; // BEQ, BNE usan registro
+                        3'b100, 3'b101: alu_src = D2; // BLT, BGE usan registro
+                    endcase
                     $display("imm: %d", imm);
                     $display("ext_imm: %d", ext_imm);
                 end
-        endcase
+                7'b1101111: begin // JAL
+                    regenb = 1;
+                    alu_src = ext_imm;
+                end
+                7'b1100111: begin // JALR
+                    regenb = 1;
+                    alu_src = ext_imm;
+                end
+            endcase
         aluSrc_cntrl_ready = 1; // Indicar que el control de la ALU está listo
      end
 
@@ -303,18 +343,32 @@ module RISCVunicycle(clock,rst,finish_flag);
                 datainmemory = D2; // Datos a escribir en memoria
                 $display("Escribiendo en memoria en direccion: %d", addrs);
                 $display("Datos a escribir en memoria: %d", datainmemory);
+            end else if (opcode == 7'b1101111 || opcode == 7'b1100111) begin // JAL/JALR
+                dataregin = pc_out + 4; // Guardar dirección de retorno
+                $display("Guardando direccion de retorno: %d", dataregin);
             end else begin
                 dataregin = ALUout; // Resultado de la ALU para escritura en el registro destino
                 $display("Resultado listo para escritura en registro: %d", dataregin);
             end
 
-            if (zero==1 && opcode==7'b1100011) begin
-                branch = 1; // Activar el salto si la condición se cumple
-                $display("Branch taken, jumping to address: %d", pc_out + branch_offset);
-            end 
-            else begin
-                    $display("continuing to next instruction.");
-                end
+            // Control de flujo posterior a la ALU para ramas
+            if (opcode == 7'b1100011) begin
+                case (funct3)
+                    3'b000: if (zero == 1) branch = 1; // BEQ
+                    3'b001: if (zero == 0) branch = 1; // BNE
+                    3'b100: if (ALUout == 1) branch = 1; // BLT
+                    3'b101: if (ALUout == 0) branch = 1; // BGE
+                endcase
+                if (branch)
+                    $display("Branch taken, jumping to address: %d", pc_out + branch_offset);
+                else
+                    $display("Branch not taken.");
+            end else if (opcode == 7'b1101111 || opcode == 7'b1100111) begin
+                branch = 1;
+                $display("Jump taken, jumping to address: %d", pc_out + branch_offset);
+            end else begin
+                $display("continuing to next instruction.");
+            end
         end
     end
 

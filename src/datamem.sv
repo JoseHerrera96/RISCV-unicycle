@@ -10,7 +10,7 @@ module DataMemory (
 // Memoria de datos
 logic [31:0] memory [0:255]; // Memoria de 256 palabras de 32 bits
 initial begin
-        $readmemh("ProyectoCorto_data.hex", memory); // Cargar instrucciones desde un archivo hexadecimal
+        $readmemh("../hex/ProyectoCorto_data.hex", memory); // Cargar instrucciones desde un archivo hexadecimal
     end
 // Lógica de escritura y lectura de memoria
 always @(posedge clk)

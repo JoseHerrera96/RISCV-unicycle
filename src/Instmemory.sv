@@ -16,7 +16,7 @@ module instmemory(addr,instruct, last_instr_flag);
             file[j] = 32'hFFFFFFFF; // Inicializar registros a -1
         end
         
-        $readmemh("FinalT.hex", file);
+        $readmemh("../hex/Test2.hex", file);
         if (file[0] === 32'hFFFFFFFF) begin
             $display("Error: El archivo FinalT.hex está vacío o no tiene suficientes datos.");
             $finish;

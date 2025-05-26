@@ -18,8 +18,16 @@ module signext(instruct, out);
             7'b0100011: begin // Tipo S
                 out = {{20{instruct[31]}}, instruct[31:25], instruct[11:7]};
             end
-            7'b1100011: begin // Tipo B (BEQ)
+            7'b1100011: begin // Tipo B (BEQ, BNE, BLT, BGE)
                 out = {{19{instruct[31]}}, instruct[31], instruct[7], instruct[30:25], instruct[11:8],1'b0}; // Extensión de signo y alineación
+                $display("Inm ext mod side: %h", out);
+            end
+            7'b1101111: begin // Tipo J (JAL)
+                out = {{11{instruct[31]}}, instruct[31], instruct[19:12], instruct[20], instruct[30:21], 1'b0}; // Extensión de signo y alineación
+                $display("Inm ext mod side: %h", out);
+            end
+            7'b1100111: begin // Tipo I (JALR)
+                out = {{20{instruct[31]}}, instruct[31:20]};
                 $display("Inm ext mod side: %h", out);
             end
             default:
